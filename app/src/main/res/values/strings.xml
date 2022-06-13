@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RealTimeSubway</string>
+    <string name="baseurl">http://swopenapi.seoul.go.kr/api/subway/65425773516a6f6e36396452775575/json/realtimePosition/0/5/</string>
+</resources>
