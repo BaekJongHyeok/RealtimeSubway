@@ -6,10 +6,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.realtimesubway.MainActivity;
-import com.example.realtimesubway.Retrofit.StationRetrofit.RetrofitClient2;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
-
 
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);

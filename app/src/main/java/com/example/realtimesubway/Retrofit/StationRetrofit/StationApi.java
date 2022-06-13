@@ -8,6 +8,6 @@ import retrofit2.http.Path;
 
 public interface StationApi {
 
-    @GET("100/{name1}")
-    Call<SearchInfoBySubwayNameService> getStationData(@Path("name1") String STATION_NM);
+    @GET("1/{name1}")
+    Call<SearchInfoBySubwayNameService> getStationData(@Path("name1") int count);
 }

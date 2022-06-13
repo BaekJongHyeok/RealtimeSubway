@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +25,6 @@ import com.example.realtimesubway.Data.Subway.RealtimeArrival;
 import com.example.realtimesubway.Data.Subway.RealtimePositionList;
 import com.example.realtimesubway.MainActivity;
 import com.example.realtimesubway.R;
-import com.example.realtimesubway.Retrofit.StationRetrofit.RetrofitClient2;
 import com.example.realtimesubway.Retrofit.StationRetrofit.StationApi;
 import com.example.realtimesubway.Retrofit.SubwayRetrofit.RetrofitAdapter;
 import com.example.realtimesubway.Retrofit.SubwayRetrofit.RetrofitApi;
@@ -34,7 +32,9 @@ import com.example.realtimesubway.Retrofit.SubwayRetrofit.RetrofitApi;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -188,38 +188,6 @@ public class FragmentPractice extends Fragment implements SwipeRefreshLayout.OnR
                     }
                 }
         ).build();
-
-        StationApi stationApi = retrofit2.create(StationApi.class);
-        // 연결
-        Call<SearchInfoBySubwayNameService> call = stationApi.getStationData(str);
-        call.enqueue(new Callback<SearchInfoBySubwayNameService>() {
-            @Override
-            public void onResponse(Call<SearchInfoBySubwayNameService> call, retrofit2.Response<SearchInfoBySubwayNameService> response) {
-                if(response.isSuccessful()) {
-                    SearchInfoBySubwayNameService result2 = response.body();
-                    List<Row> rowList =  result2.getSearchInfoBySubwayNameService().getRow();
-
-                    stationline = new ArrayList<>();
-
-
-                    for (int i=0; i<rowList.size(); i++){
-                        StationLine datalist = new StationLine();
-                        //arrivals.add(new StationLine(rowList.get(i).getLineNum()));
-                        datalist.setLineNum(rowList.get(i).getLineNum());
-                        stationline.add(datalist);
-                        linecount++;
-                    }
-                    Log.d("test",stationline.toString());
-                } else {
-                    Toast.makeText(getActivity().getApplicationContext(),"에러", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<SearchInfoBySubwayNameService> call, Throwable t) {
-                Log.d("test", "error");
-            }
-        });
-
 
         return mview;
     }
