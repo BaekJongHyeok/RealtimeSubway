@@ -12,19 +12,21 @@ import java.util.List;
 import java.util.Map;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
+    int tabCount;
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, int lineCount) {
         super(fragmentActivity);
+        tabCount = lineCount;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return FragmentPractice.newInstance(position);
+        return SubwayDataPrintFragment.newInstance(position);
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return tabCount;
     }
 }

@@ -35,8 +35,9 @@ public class Row  {
     }
 
     public String getLineNum() {
-        return lineNum;
+        return lineNum.substring(0,lineNum.length());
     }
+
 
     public void setLineNum(String lineNum) {
         this.lineNum = lineNum;

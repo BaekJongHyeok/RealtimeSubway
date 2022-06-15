@@ -8,14 +8,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/trainLineNm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:textStyle="bold"
-        android:textColor="@color/black"/>
-    <TextView
-        android:id="@+id/subwayHeading"
+        android:id="@+id/subwayNm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
@@ -23,21 +16,28 @@
         android:textColor="@color/black"/>
 
     <TextView
-        android:id="@+id/bstatnNm"
+        android:id="@+id/statnNm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:textStyle="bold"
         android:textColor="@color/black"/>
     <TextView
-        android:id="@+id/arvlMsg2"
+        android:id="@+id/recptnDt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:textStyle="bold"
         android:textColor="@color/black"/>
     <TextView
-        android:id="@+id/arvlMsg3"
+        android:id="@+id/trainSttus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+    <TextView
+        android:id="@+id/directAt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"

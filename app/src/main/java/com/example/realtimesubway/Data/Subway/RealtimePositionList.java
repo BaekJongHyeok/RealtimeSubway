@@ -10,9 +10,9 @@ public class RealtimePositionList {
     @SerializedName("errorMessage")
     @Expose
     private ErrorMessage errorMessage;
-    @SerializedName("realtimeArrivalList")
+    @SerializedName("realtimePositionList")
     @Expose
-    private List<RealtimeArrival> realtimeArrivalList;
+    private List<RealtimePosition> realtimePositionList = null;
 
     public ErrorMessage getErrorMessage() {
         return errorMessage;
@@ -22,12 +22,12 @@ public class RealtimePositionList {
         this.errorMessage = errorMessage;
     }
 
-    public List<RealtimeArrival> getRealtimeArrivalList() {
-        return realtimeArrivalList;
+    public List<RealtimePosition> getRealtimePositionList() {
+        return realtimePositionList;
     }
 
-    public void setRealtimeArrivalList(List<RealtimeArrival> realtimeArrivalList) {
-        this.realtimeArrivalList = realtimeArrivalList;
+    public void setRealtimePositionList(List<RealtimePosition> realtimePositionList) {
+        this.realtimePositionList = realtimePositionList;
     }
 
 }

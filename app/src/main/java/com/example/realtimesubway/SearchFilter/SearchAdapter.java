@@ -5,10 +5,12 @@ import android.content.ClipData;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.realtimesubway.R;
 
 import java.util.ArrayList;
@@ -44,15 +46,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        String test2 = searchItemArrayList.get(position).getStationName();
-
-        holder.stationName.setText(test2);
-
+        SearchItem selected = searchItemArrayList.get(position);
+        holder.stationName.setText(selected.getStationName());
+        Glide.with(activity).load(selected.getImage()).fitCenter().into(holder.imageView);
+        Glide.with(activity).load(selected.getImage2()).fitCenter().into(holder.imageView2);
+        Glide.with(activity).load(selected.getImage3()).fitCenter().into(holder.imageView3);
+        Glide.with(activity).load(selected.getImage4()).fitCenter().into(holder.imageView4);
     }
 
     @Override
     public int getItemCount() {
-        return searchItemArrayList.size();
+        return searchItemArrayList != null ? searchItemArrayList.size() : 0;
     }
 
     public void  filterList(ArrayList<SearchItem> filteredList) {
@@ -61,17 +65,21 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-
+        ImageView imageView, imageView2, imageView3, imageView4;
         TextView stationName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.stationName=itemView.findViewById(R.id.stationName);
+            this.imageView = itemView.findViewById(R.id.imagev1);
+            this.imageView2 = itemView.findViewById(R.id.imagev2);
+            this.imageView3 = itemView.findViewById(R.id.imagev3);
+            this.imageView4 = itemView.findViewById(R.id.imagev4);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = getAbsoluteAdapterPosition();
+                    int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
                         if(mListener !=null){
                             mListener.onItemClick(v, pos);

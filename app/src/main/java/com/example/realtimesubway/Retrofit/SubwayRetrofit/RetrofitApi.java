@@ -9,5 +9,5 @@ import retrofit2.http.Path;
 public interface RetrofitApi {
 
     @GET("100/{name1}")
-    Call<RealtimePositionList> getData(@Path("name1") String subwayNm);
+    Call<RealtimePositionList> getRealtimePositionList(@Path("name1") String subwayNm);
 }

@@ -10,18 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.realtimesubway.Data.Subway.Arrival;
+import com.example.realtimesubway.Data.Subway.PositionData;
 import com.example.realtimesubway.R;
 
 import java.util.List;
 
 public class RetrofitAdapter extends RecyclerView.Adapter<RetrofitAdapter.MyViewHolder> {
-
     private Context c;
-    private List<Arrival> dataList;
+    private List<PositionData> positionData;
 
-    public RetrofitAdapter(Context c,List<Arrival> dataList){
+    public RetrofitAdapter(Context c,List<PositionData> dataList){
         this.c = c;
-        this.dataList = dataList;
+        this.positionData = dataList;
     }
 
 
@@ -35,35 +35,50 @@ public class RetrofitAdapter extends RecyclerView.Adapter<RetrofitAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        PositionData getPosition = positionData.get(position);
+        holder.subwayNm.setText(getPosition.getSubwayNm());
+        holder.statnNm.setText(getPosition.getStatnNm());
+        holder.recptnDt.setText(getPosition.getRecptnDt());
 
-        holder.trainLineNm.setText(dataList.get(position).getTrainLineNm());
-        holder.subwayHeading.setText("타는 곳 : " + dataList.get(position).getSubwayHeading());
-        holder.bstatnNm.setText("종착역 : " + dataList.get(position).getBstatnNm());
-        holder.arvlMsg2.setText(dataList.get(position).getArvlMsg2());
-        holder.arvlMsg3.setText("현재위치 : " + dataList.get(position).getArvlMsg3());
+        //도착 여부
+        switch (getPosition.getTrainSttus()){
+            case "0":
+                holder.trainSttus.setText("현재 열차 상태 : 진입");
+                break;
+            case "1":
+                holder.trainSttus.setText("현재 열차 상태 : 도착");
+                break;
+            default:
+                holder.trainSttus.setText("현재 열차 상태 : 출발");
+                break;
+        }
 
+        //급행 여부
+        switch (getPosition.getDirectAt()){
+            case "0":
+                holder.directAt.setText("완행");
+                break;
+            case "1":
+                holder.directAt.setText("[급행]");
+                break;
+        }
     }
 
     @Override
     public int getItemCount(){
-        return dataList.size();
+        return positionData.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView trainLineNm;
-        TextView subwayHeading;
-        TextView bstatnNm;
-        TextView arvlMsg2;
-        TextView arvlMsg3;
+        TextView subwayNm, statnNm, recptnDt, trainSttus, directAt;
 
         public MyViewHolder(@NonNull View itemView){
             super(itemView);
-
-            trainLineNm = itemView.findViewById(R.id.trainLineNm);
-            subwayHeading = itemView.findViewById(R.id.subwayHeading);
-            bstatnNm = itemView.findViewById(R.id.bstatnNm);
-            arvlMsg2 = itemView.findViewById(R.id.arvlMsg2);
-            arvlMsg3 = itemView.findViewById(R.id.arvlMsg3);
+            subwayNm = itemView.findViewById(R.id.subwayNm);
+            statnNm = itemView.findViewById(R.id.statnNm);
+            recptnDt = itemView.findViewById(R.id.recptnDt);
+            trainSttus = itemView.findViewById(R.id.trainSttus);
+            directAt = itemView.findViewById(R.id.directAt);
         }
     }
 }

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,27 +19,21 @@ import android.widget.Toast;
 
 import com.example.realtimesubway.Data.Station.Row;
 import com.example.realtimesubway.Data.Station.SearchInfoBySubwayNameService;
-import com.example.realtimesubway.Line.ViewpagerTest;
+import com.example.realtimesubway.Line.SubwayDataPrintViewPager;
 import com.example.realtimesubway.Retrofit.StationRetrofit.StationApi;
 import com.example.realtimesubway.SearchFilter.SearchAdapter;
 import com.example.realtimesubway.SearchFilter.SearchItem;
+import com.example.realtimesubway.SearchStationLineImage.Searchstationline1;
+import com.example.realtimesubway.SearchStationLineImage.Searchstationline2;
+import com.example.realtimesubway.SearchStationLineImage.Searchstationline3;
+import com.example.realtimesubway.SearchStationLineImage.Searchstationline4;
 
 import java.io.IOException;
-import java.security.KeyStore;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -53,17 +49,20 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     public static Context mContext;
-    public String name;
-    public List<Map<String, Object>> listmap;
-    public Map<String, Object> map;
-    public int linecount;
     private Retrofit retrofit;
     private StationApi stationApi;
+    public Map<String, ArrayList<String>> sortedMap;
+    String key;
+    public Bitmap image1,image2,image3,image4,image5,image6,image7,image8,image9,image10,image11,image12,
+            image13,image14,image15,image16,image17,image18,image19,image20,image21,image22,image23,image24;
+    public Bitmap firstImage, secondImage, thirdImage, fourthImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setImage();
     }
 
     @Override
@@ -115,14 +114,18 @@ public class MainActivity extends AppCompatActivity {
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int postion) {
-                name = searchItemArrayList.get(postion).getStationName();
-                Intent intent = new Intent(MainActivity.this, ViewpagerTest.class);
+                String name = searchItemArrayList.get(postion).getStationName();
+                Intent intent = new Intent(MainActivity.this, SubwayDataPrintViewPager.class);
+                intent.putExtra(SubwayDataPrintViewPager.KEY_STATION_NAME,name);
+                intent.putStringArrayListExtra(SubwayDataPrintViewPager.KEY_STATION_LINES, sortedMap.get(name));
+                intent.putExtra(SubwayDataPrintViewPager.KEY_LINECOUNT, sortedMap.get(name).size());
                 startActivity(intent);
                 editText.setText(null);
             }
         });
         mContext = this;
     }
+
 
     // 필터링 함수
     public void searchFilter(String searchText) {
@@ -166,25 +169,63 @@ public class MainActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     SearchInfoBySubwayNameService result2 = response.body();
                     List<Row> rowList =  result2.getSearchInfoBySubwayNameService().getRow();
-                    listmap = new ArrayList<Map<String, Object>>();
-                    for(int i = 0; i< rowList.size(); i++){
-                        map = new HashMap<String, Object>();
-                        map.put(rowList.get(i).getStationNm(), rowList.get(i).getLineNum());
-                        listmap.add(map);
+
+                    // hashmap 형태로 만들기
+                    HashMap<String, ArrayList<String>> dic = new HashMap<String, ArrayList<String>>();
+                    for(int i=0; i<rowList.size(); i++){
+                        String key = rowList.get(i).getStationNm();
+                        ArrayList<String> list = new ArrayList<String>();
+                        if(dic.containsKey(key)){
+                            list = dic.get(key);
+                            list.add(rowList.get(i).getLineNum());
+                        } else {
+                            list.add(rowList.get(i).getLineNum());
+                        }
+                        dic.put(key,list);
                     }
 
+                    // 맵 key 기준 정렬
+                    sortedMap = new TreeMap<>(dic);
 
                     // 전철역 뿌려주기
-                    for(Map<String, Object> map : listmap){
-                        for(Map.Entry<String, Object> entry: map.entrySet()){
-                            String key = entry.getKey();
-                            Object value = entry.getValue();
-                            searchItemArrayList.add(new SearchItem(key));
-                            searchAdapter.notifyDataSetChanged();
+                    for(Map.Entry<String, ArrayList<String>> entry: sortedMap.entrySet()){
+                        key = entry.getKey();
+                        ArrayList<String> value = entry.getValue();
+
+                        firstImage = null;
+                        secondImage = null;
+                        thirdImage = null;
+                        fourthImage = null;
+
+                        if(value.size() == 1 ){
+                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
+                            firstImage = searchstationline1.firstImage;
+                        } else if(value.size() == 2){
+                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
+                            firstImage = searchstationline1.firstImage;
+                            Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
+                            secondImage = searchstationline2.secondImage;
+                        } else if(value.size() == 3){
+                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
+                            firstImage = searchstationline1.firstImage;
+                            Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
+                            secondImage = searchstationline2.secondImage;
+                            Searchstationline3 searchstationline3 = new Searchstationline3(value.get(2));
+                            thirdImage = searchstationline3.thirdImage;
+                        } else if(value.size() == 4){
+                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
+                            firstImage = searchstationline1.firstImage;
+                            Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
+                            secondImage = searchstationline2.secondImage;
+                            Searchstationline3 searchstationline3 = new Searchstationline3(value.get(2));
+                            thirdImage = searchstationline3.thirdImage;
+                            Searchstationline4 searchstationline4 = new Searchstationline4(value.get(3));
+                            fourthImage = searchstationline4.fourthImage;
 
                         }
+                        searchItemArrayList.add(new SearchItem(firstImage, secondImage, thirdImage, fourthImage, key));
+                        searchAdapter.notifyDataSetChanged();
                     }
-                    Log.d("test", listmap.toString());
 
                 } else {
                     Toast.makeText(MainActivity.this ,"에러", Toast.LENGTH_SHORT).show();
@@ -196,6 +237,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setImage() {
+        //이미지 추가
+        image1 = BitmapFactory.decodeResource(getResources(), R.drawable.line1);
+        image2 = BitmapFactory.decodeResource(getResources(), R.drawable.line2);
+        image3 = BitmapFactory.decodeResource(getResources(), R.drawable.line3);
+        image4 = BitmapFactory.decodeResource(getResources(), R.drawable.line4);
+        image5 = BitmapFactory.decodeResource(getResources(), R.drawable.line5);
+        image6 = BitmapFactory.decodeResource(getResources(), R.drawable.line6);
+        image7 = BitmapFactory.decodeResource(getResources(), R.drawable.line7);
+        image8 = BitmapFactory.decodeResource(getResources(), R.drawable.line8);
+        image9 = BitmapFactory.decodeResource(getResources(), R.drawable.line9);
+        image10 = BitmapFactory.decodeResource(getResources(), R.drawable.line10);
+        image11 = BitmapFactory.decodeResource(getResources(), R.drawable.line11);
+        image12 = BitmapFactory.decodeResource(getResources(), R.drawable.line12);
+        image13 = BitmapFactory.decodeResource(getResources(), R.drawable.line13);
+        image14 = BitmapFactory.decodeResource(getResources(), R.drawable.line14);
+        image15 = BitmapFactory.decodeResource(getResources(), R.drawable.line15);
+        image16 = BitmapFactory.decodeResource(getResources(), R.drawable.line16);
+        image17 = BitmapFactory.decodeResource(getResources(), R.drawable.line17);
+        image18 = BitmapFactory.decodeResource(getResources(), R.drawable.line18);
+        image19 = BitmapFactory.decodeResource(getResources(), R.drawable.line19);
+        image20 = BitmapFactory.decodeResource(getResources(), R.drawable.line20);
+        image21 = BitmapFactory.decodeResource(getResources(), R.drawable.line21);
+        image22 = BitmapFactory.decodeResource(getResources(), R.drawable.line22);
+        image23 = BitmapFactory.decodeResource(getResources(), R.drawable.line23);
+        image24 = BitmapFactory.decodeResource(getResources(), R.drawable.line24);
     }
 
 }
