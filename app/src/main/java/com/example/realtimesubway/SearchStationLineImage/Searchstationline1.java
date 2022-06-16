@@ -78,7 +78,7 @@ public class Searchstationline1 {
             firstImage  = image20;
         } else if ("의정부경전철".equals(value)) {
             firstImage  = image21;
-        } else if ("우이신설경전철".equals(value)) {
+        } else if ("우이신설선".equals(value)) {
             firstImage  = image22;
         } else if ("경강선".equals(value)) {
             firstImage  = image23;

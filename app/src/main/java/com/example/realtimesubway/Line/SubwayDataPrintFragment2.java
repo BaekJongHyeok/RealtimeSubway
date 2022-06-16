@@ -38,17 +38,22 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class SubwayDataPrintFragment2 extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     RecyclerView recyclerView1, recyclerView2;
+    RetrofitAdapter retrofitAdapter;
     ArrivalAdapter arrivalAdapter;
     SwipeRefreshLayout swipeRefreshLayout;
+    List<RealtimePosition> positionList;
+    List<RealtimeArrival> arrivalList;
+    List<PositionData> upPositionList, downPositionList;
+    List<Arrival> upArrivalList, downArrivalList;
     RetrofitApi retrofitApi;
     ArrivalApi arrivalApi;
     Retrofit retrofit;
     String stationLineName, stationNm;
 
-    public static SubwayDataPrintFragment newInstance(int number, String stationLineNm, String stationNm) {
-        SubwayDataPrintFragment fp = new SubwayDataPrintFragment();
+    public static SubwayDataPrintFragment2 newInstance(int number, String stationLineNm, String stationNm) {
+        SubwayDataPrintFragment2 fp = new SubwayDataPrintFragment2();
         Bundle bundle = new Bundle();
         bundle.putInt("number", number);
         Bundle stationLineBundle = new Bundle();
@@ -62,6 +67,7 @@ public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onCreate(@NonNull Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         if(getArguments() != null){
             int num = getArguments().getInt("number");
             stationLineName = getArguments().getString("stationLineName");
@@ -72,15 +78,13 @@ public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLay
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
-        View mView = LayoutInflater.from(inflater.getContext()).inflate(R.layout.fragment_subwaydata_print,container,false);
+        View mview = LayoutInflater.from(inflater.getContext()).inflate(R.layout.fragment_subwaydata_print,container,false);
 
-        // 새로고침 관련
-        swipeRefreshLayout = mView.findViewById(R.id.swipeLayout);
+        swipeRefreshLayout = mview.findViewById(R.id.swipeLayout);
         swipeRefreshLayout.setOnRefreshListener(this);
+        recyclerView1 = mview.findViewById(R.id.recycler1);
+        recyclerView2 = mview.findViewById(R.id.recycler2);
 
-        // RecyclerView 관련
-        recyclerView1 = mView.findViewById(R.id.recycler1);
-        recyclerView2 = mView.findViewById(R.id.recycler2);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView1.setLayoutManager(layoutManager);
@@ -93,8 +97,12 @@ public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLay
         buildRetrofit();
         createRetrofitService();
         callRetrofitGetApi();
-        return mView;
+
+
+
+        return mview;
     }
+
 
     @Override
     public void onRefresh() {
@@ -147,18 +155,25 @@ public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLay
     private void createRetrofitService2() { arrivalApi = retrofit.create(ArrivalApi.class); }
 
     public void callRetrofitGetApi(){
-        String LineNumber = stationLineName.replaceFirst("0",""); // stationLineName 앞에 붙는 0제거
-        retrofitApi.getRealtimePositionList(LineNumber).enqueue(new Callback<RealtimePositionList>() {
+        String str = stationLineName.replaceFirst("0","");
+        retrofitApi.getRealtimePositionList(str).enqueue(new Callback<RealtimePositionList>() {
             @Override
             public void onResponse(Call<RealtimePositionList> call, retrofit2.Response<RealtimePositionList> response) {
                 if(response.isSuccessful()) {
                     RealtimePositionList result = response.body();
-                    List<RealtimePosition> positionList =  result.getRealtimePositionList();
-                    String subwayLineCode = positionList.get(0).getSubwayId(); // 위치정보 API의 노선번호
+
+                    positionList =  result.getRealtimePositionList();
+
+                    upPositionList = new ArrayList<>();
+                    downPositionList = new ArrayList<>();
+
+                    String subwayLineCode = positionList.get(0).getSubwayId();
+
 
                     buildRetrofit2();
                     createRetrofitService2();
                     callRetrofitGetApi2(subwayLineCode);
+
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(),"에러", Toast.LENGTH_SHORT).show();
                 }
@@ -178,42 +193,53 @@ public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLay
             public void onResponse(Call<RealtimeArrivalList> call, retrofit2.Response<RealtimeArrivalList> response) {
                 if(response.isSuccessful()) {
                     RealtimeArrivalList result = response.body();
-                    List<RealtimeArrival> arrivalList = result.getRealtimeArrivalList();
-                    List<Arrival> upArrivalList = new ArrayList<>(); // 상행열차 담을 리스트
-                    List<Arrival> downArrivalList = new ArrayList<>(); // 하행열차 담을 리스트
+
+                    arrivalList = result.getRealtimeArrivalList();
+
+                    upArrivalList = new ArrayList<>();
+                    downArrivalList = new ArrayList<>();
 
                     if(arrivalList == null){
                         Toast.makeText(getContext(),"실패",Toast.LENGTH_SHORT).show();
                     } else {
                         for(RealtimeArrival arrival : arrivalList){
-                            // 도착정보 API의 노선번호가 위치정보 API의 노선번호와 같을 경우
                             if(arrival.getSubwayId().equals(subwayLineCode)){
-                                // 상행이거나 외선일 경우 upArrivalList
-                                if(arrival.getUpdnLine().equals("상행") || arrival.getUpdnLine().equals("외선")){
+                                if(arrival.getUpdnLine().equals("상행")){
                                     Arrival arrTemp = new Arrival();
                                     arrTemp.setTrainLineNm(arrival.getTrainLineNm());
+                                    arrTemp.setUpdnLine(arrival.getUpdnLine());
+                                    arrTemp.setSubwayHeading(arrival.getSubwayHeading());
+                                    arrTemp.setBstatnNm(arrival.getBstatnNm());
                                     arrTemp.setArvlMsg2(arrival.getArvlMsg2());
+                                    arrTemp.setArvlMsg3(arrival.getArvlMsg3());
                                     upArrivalList.add(arrTemp);
-                                } else {
+                                } else{
                                     Arrival arrTemp = new Arrival();
                                     arrTemp.setTrainLineNm(arrival.getTrainLineNm());
+                                    arrTemp.setUpdnLine(arrival.getUpdnLine());
+                                    arrTemp.setSubwayHeading(arrival.getSubwayHeading());
+                                    arrTemp.setBstatnNm(arrival.getBstatnNm());
                                     arrTemp.setArvlMsg2(arrival.getArvlMsg2());
+                                    arrTemp.setArvlMsg3(arrival.getArvlMsg3());
                                     downArrivalList.add(arrTemp);
                                 }
                             } else {
                             }
                         }
                     }
-                    // 상행선 출력
                     arrivalAdapter = new ArrivalAdapter(getActivity().getApplicationContext(), upArrivalList);
                     recyclerView1.setAdapter(arrivalAdapter);
-                    // 하행선 출력
+
                     arrivalAdapter = new ArrivalAdapter(getActivity().getApplicationContext(), downArrivalList);
                     recyclerView2.setAdapter(arrivalAdapter);
+
                 }
             }
+
             @Override
-            public void onFailure(Call<RealtimeArrivalList> call, Throwable t) {}
+            public void onFailure(Call<RealtimeArrivalList> call, Throwable t) {
+
+            }
         });
 
     }

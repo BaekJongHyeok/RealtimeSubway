@@ -27,6 +27,9 @@ public class Row  {
     }
 
     public String getStationNm() {
+        if(stationNm.equals("서울역")){
+            stationNm = "서울";
+        }
         return stationNm;
     }
 
@@ -35,7 +38,12 @@ public class Row  {
     }
 
     public String getLineNum() {
-        return lineNum.substring(0,lineNum.length());
+        String stripLineNum = lineNum.substring(0,lineNum.length());
+        if(stripLineNum.equals("우이신설경전철")){
+             stripLineNum = "우이신설선";
+        } else {
+        }
+        return stripLineNum;
     }
 
 

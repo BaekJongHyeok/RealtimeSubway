@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.realtimesubway.Data.Station.Row;
 import com.example.realtimesubway.Data.Station.SearchInfoBySubwayNameService;
+import com.example.realtimesubway.Line.SubwayDataPrintFragment3;
 import com.example.realtimesubway.Line.SubwayDataPrintViewPager;
 import com.example.realtimesubway.Retrofit.StationRetrofit.StationApi;
 import com.example.realtimesubway.SearchFilter.SearchAdapter;
@@ -73,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         // 검색 필터링
-        filteredList=new ArrayList<>();
-        searchItemArrayList=new ArrayList<>();
+        filteredList = new ArrayList<>();
+        searchItemArrayList = new ArrayList<>();
         searchAdapter = new SearchAdapter(searchItemArrayList,this);
 
         // recyclerview
@@ -106,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 String searchText = editText.getText().toString();
                 searchFilter(searchText);
+                //여기서 리스트 포지션 초기화 시켜주면 됌
+
             }
         });
 
@@ -113,8 +116,13 @@ public class MainActivity extends AppCompatActivity {
         // 클릭시 해당 역 정보로 이동
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View v, int postion) {
-                String name = searchItemArrayList.get(postion).getStationName();
+            public void onItemClick(View v, int position) {
+                String name;
+                if(filteredList.size() == 0){
+                    name = searchItemArrayList.get(position).getStationName();
+                }else {
+                    name = filteredList.get(position).getStationName();
+                }
                 Intent intent = new Intent(MainActivity.this, SubwayDataPrintViewPager.class);
                 intent.putExtra(SubwayDataPrintViewPager.KEY_STATION_NAME,name);
                 intent.putStringArrayListExtra(SubwayDataPrintViewPager.KEY_STATION_LINES, sortedMap.get(name));
@@ -174,12 +182,25 @@ public class MainActivity extends AppCompatActivity {
                     HashMap<String, ArrayList<String>> dic = new HashMap<String, ArrayList<String>>();
                     for(int i=0; i<rowList.size(); i++){
                         String key = rowList.get(i).getStationNm();
+                        String lineNumValue = rowList.get(i).getLineNum();
                         ArrayList<String> list = new ArrayList<String>();
                         if(dic.containsKey(key)){
                             list = dic.get(key);
-                            list.add(rowList.get(i).getLineNum());
+                            if(lineNumValue.equals("인천선") || lineNumValue.equals("인천2호선") || lineNumValue.equals("경의선") || lineNumValue.equals("경강선")
+                            || lineNumValue.equals("신림선") || lineNumValue.equals("서해선") || lineNumValue.equals("김포도시철도") || lineNumValue.equals("용인경전철")
+                            || lineNumValue.equals("의정부경전철")){
+                                // api에 데이터가 없는 노선은 삭제
+                            } else{
+                                list.add(lineNumValue);
+                            }
                         } else {
-                            list.add(rowList.get(i).getLineNum());
+                            if(lineNumValue.equals("인천선") || lineNumValue.equals("인천2호선") || lineNumValue.equals("경의선") || lineNumValue.equals("경강선")
+                                    || lineNumValue.equals("신림선") || lineNumValue.equals("서해선") || lineNumValue.equals("김포도시철도") || lineNumValue.equals("용인경전철")
+                                    || lineNumValue.equals("의정부경전철")){
+                                // api에 데이터가 없는 노선은 삭제
+                            } else{
+                                list.add(lineNumValue);
+                            }
                         }
                         dic.put(key,list);
                     }
@@ -197,36 +218,29 @@ public class MainActivity extends AppCompatActivity {
                         thirdImage = null;
                         fourthImage = null;
 
-                        if(value.size() == 1 ){
-                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
-                            firstImage = searchstationline1.firstImage;
-                        } else if(value.size() == 2){
-                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
-                            firstImage = searchstationline1.firstImage;
-                            Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
-                            secondImage = searchstationline2.secondImage;
-                        } else if(value.size() == 3){
-                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
-                            firstImage = searchstationline1.firstImage;
-                            Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
-                            secondImage = searchstationline2.secondImage;
-                            Searchstationline3 searchstationline3 = new Searchstationline3(value.get(2));
-                            thirdImage = searchstationline3.thirdImage;
-                        } else if(value.size() == 4){
-                            Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
-                            firstImage = searchstationline1.firstImage;
-                            Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
-                            secondImage = searchstationline2.secondImage;
-                            Searchstationline3 searchstationline3 = new Searchstationline3(value.get(2));
-                            thirdImage = searchstationline3.thirdImage;
-                            Searchstationline4 searchstationline4 = new Searchstationline4(value.get(3));
-                            fourthImage = searchstationline4.fourthImage;
 
+                        if(value.size() >0){
+                            if(value.size() == 1 ){
+                                Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
+                                firstImage = searchstationline1.firstImage;
+                            } else if(value.size() == 2){
+                                Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
+                                firstImage = searchstationline1.firstImage;
+                                Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
+                                secondImage = searchstationline2.secondImage;
+                            } else if(value.size() == 3){
+                                Searchstationline1 searchstationline1 = new Searchstationline1(value.get(0));
+                                firstImage = searchstationline1.firstImage;
+                                Searchstationline2 searchstationline2 = new Searchstationline2(value.get(1));
+                                secondImage = searchstationline2.secondImage;
+                                Searchstationline3 searchstationline3 = new Searchstationline3(value.get(2));
+                                thirdImage = searchstationline3.thirdImage;
+                            }
+                            searchItemArrayList.add(new SearchItem(firstImage, secondImage, thirdImage, fourthImage, key));
+                            searchAdapter.notifyDataSetChanged();
+                        } else {
                         }
-                        searchItemArrayList.add(new SearchItem(firstImage, secondImage, thirdImage, fourthImage, key));
-                        searchAdapter.notifyDataSetChanged();
                     }
-
                 } else {
                     Toast.makeText(MainActivity.this ,"에러", Toast.LENGTH_SHORT).show();
                 }

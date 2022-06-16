@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.realtimesubway.Data.Subway.Arrival;
 import com.example.realtimesubway.Data.Subway.PositionData;
 import com.example.realtimesubway.R;
 
@@ -74,11 +73,8 @@ public class RetrofitAdapter extends RecyclerView.Adapter<RetrofitAdapter.MyView
 
         public MyViewHolder(@NonNull View itemView){
             super(itemView);
-            subwayNm = itemView.findViewById(R.id.subwayNm);
-            statnNm = itemView.findViewById(R.id.statnNm);
-            recptnDt = itemView.findViewById(R.id.recptnDt);
-            trainSttus = itemView.findViewById(R.id.trainSttus);
-            directAt = itemView.findViewById(R.id.directAt);
+            subwayNm = itemView.findViewById(R.id.trainLineNm);
+            trainSttus = itemView.findViewById(R.id.arvlMsg2);
         }
     }
 }

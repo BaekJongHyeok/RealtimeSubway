@@ -1,4 +1,4 @@
-package com.example.realtimesubway.Data.Subway;
+package com.example.realtimesubway.Data.SubwayArrival;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -236,15 +236,5 @@ public class RealtimeArrival {
 
     public void setArvlCd(String arvlCd) {
         this.arvlCd = arvlCd;
-    }
-
-    @Override
-    public String toString() {
-        return "상하행 : " + updnLine + '\n' +
-                "도착지방향 : " + trainLineNm + '\n' +
-                "내리는 방향 : " + subwayHeading + '\n' +
-                "종착역 명 : '" + bstatnNm + '\n' +
-                "첫 도착메세지 : " + arvlMsg2 + '\n' +
-                "두번째 도착메세지 : " + arvlMsg3 + '\n' + '\n';
     }
 }

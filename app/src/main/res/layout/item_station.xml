@@ -6,27 +6,22 @@
     android:gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:id="@+id/textlay"
+    <TextView
+        android:id="@+id/stationName"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        tools:ignore="MissingConstraints">
-        <TextView
-            android:id="@+id/stationName"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:textColor="#111111"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
-    </LinearLayout>
+        android:textColor="#111111"
+        android:textSize="18sp"
+        android:gravity="center|left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imagev1"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:layout_constraintStart_toEndOf="@+id/textlay"
+        app:layout_constraintStart_toEndOf="@+id/stationName"
         tools:ignore="MissingConstraints" />
     <ImageView
         android:id="@+id/imagev2"

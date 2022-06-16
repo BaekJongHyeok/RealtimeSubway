@@ -36,13 +36,11 @@ public class SubwayDataPrintViewPager extends AppCompatActivity {
         stationLines = getIntent().getStringArrayListExtra(KEY_STATION_LINES);
         lineCount = getIntent().getIntExtra(KEY_LINECOUNT,0);
 
-        Log.d("test", String.valueOf(lineCount));
-
         textView.setText(stationName +" 역");
         tablayout = findViewById(R.id.layout_tab);
         viewpager2 = findViewById(R.id.viewpager2_container);
 
-        viewPagerAdapter = new ViewPagerAdapter(this, lineCount);
+        viewPagerAdapter = new ViewPagerAdapter(this, lineCount, stationLines, stationName);
         viewpager2.setAdapter(viewPagerAdapter);
 
 
@@ -51,7 +49,6 @@ public class SubwayDataPrintViewPager extends AppCompatActivity {
         for(int i=0; i<stationLines.size(); i++){
             tabElement.add(stationLines.get(i));
         }
-
 
         new TabLayoutMediator(tablayout, viewpager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
