@@ -1,17 +1,13 @@
-package com.example.realtimesubway;
+package com.example.realtimesubway.PositionSection.LineList;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.RetrofitApi;
 import com.example.realtimesubway.ArrivalSection.Data.Subway.RealtimePosition;
 import com.example.realtimesubway.ArrivalSection.Data.Subway.RealtimePositionList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;

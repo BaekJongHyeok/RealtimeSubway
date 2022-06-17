@@ -1,4 +1,4 @@
-package com.example.realtimesubway;
+package com.example.realtimesubway.PositionSection.LineList;
 
 import com.example.realtimesubway.ArrivalSection.Data.Subway.RealtimePosition;
 

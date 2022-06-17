@@ -1,4 +1,4 @@
-package com.example.realtimesubway.PositionSection.LineList;
+package com.example.realtimesubway.PositionSection.AllStation;
 
 public class LineAllStationData {
     private String key, value;

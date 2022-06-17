@@ -2,27 +2,17 @@ package com.example.realtimesubway.PositionSection;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.realtimesubway.ArrivalSection.Data.Retrofit.StationRetrofit.StationApi;
 import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.RetrofitApi;
-import com.example.realtimesubway.ArrivalSection.Data.SearchFilter.SearchItem;
-import com.example.realtimesubway.ArrivalSection.Data.SearchStationLineImage.Searchstationline1;
-import com.example.realtimesubway.ArrivalSection.Data.SearchStationLineImage.Searchstationline2;
-import com.example.realtimesubway.ArrivalSection.Data.SearchStationLineImage.Searchstationline3;
-import com.example.realtimesubway.BuildRetrofit;
-import com.example.realtimesubway.CallRetrofitGetApi;
-import com.example.realtimesubway.CallRetrofitGetApi2;
-import com.example.realtimesubway.PositionSection.LineList.LineAllStationAdapter;
-import com.example.realtimesubway.PositionSection.LineList.LineAllStationData;
-import com.example.realtimesubway.PositionSection.LineList.LineListAdapter;
-import com.example.realtimesubway.PositionSection.LineList.LineListData;
+import com.example.realtimesubway.PositionSection.LineList.CallRetrofitGetApi;
+import com.example.realtimesubway.PositionSection.AllStation.CallRetrofitGetApi2;
+import com.example.realtimesubway.PositionSection.AllStation.LineAllStationData;
 import com.example.realtimesubway.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class RealtimePositionLine extends AppCompatActivity {
@@ -51,7 +41,7 @@ public class RealtimePositionLine extends AppCompatActivity {
         // 전체 역 정보
         BuildRetrofit buildRetrofit2 = new BuildRetrofit(allStationURL);
         stationApi = buildRetrofit2.retrofit.create(StationApi.class);
-        CallRetrofitGetApi2 callRetrofitGetApi2 = new CallRetrofitGetApi2(stationApi, lineNumYesZero);
+        CallRetrofitGetApi2 callRetrofitGetApi2 = new CallRetrofitGetApi2(stationApi, lineNumYesZero); // 아니 얘가 도대체 왜 안받아와지는거임 이해가 안되네
 
         Log.d("test","test");
 
