@@ -1,4 +1,4 @@
-package com.example.realtimesubway.ArrivalSection.Data.Subway;
+package com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway;
 
 public class PositionData {
     private String updnLine;
@@ -7,6 +7,7 @@ public class PositionData {
     private String statnNm;
     private String recptnDt;
     private String trainSttus;
+    private String trainNo;
     private String directAt;
 
     public PositionData(){};
@@ -65,5 +66,13 @@ public class PositionData {
 
     public void setDirectAt(String directAt) {
         this.directAt = directAt;
+    }
+
+    public String getTrainNo() {
+        return trainNo;
+    }
+
+    public void setTrainNo(String trainNo) {
+        this.trainNo = trainNo;
     }
 }

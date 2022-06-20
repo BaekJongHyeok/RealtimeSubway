@@ -1,0 +1,220 @@
+package com.example.realtimesubway.PositionSection;
+
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePosition;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePositionList;
+import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.RetrofitApi;
+import com.example.realtimesubway.PositionMainActivity;
+import com.example.realtimesubway.PositionSection.AllStation.OpenApi.AllStation;
+import com.example.realtimesubway.PositionSection.AllStation.OpenApi.Row;
+import com.example.realtimesubway.PositionSection.AllStation.Retrofit.AllStationApi;
+import com.example.realtimesubway.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class RealtimePositionLine2 extends AppCompatActivity{
+    public static final String KEY_LINENUM = "linenum";
+    int position;
+    TreeMap<String, String> sortedStationMap;
+    TreeMap<String, ArrayList<String>> sortedPositionMap;
+    ArrayList<AllStationData> allStationData, allStationData2;
+    ListView listView, listView2;
+    String lineNum; // 변환받은 라인 이름을 넣어줄 변수
+    List<PositionData> upPositionList;
+    List<PositionData> downPositionList;
+    HashMap<String, String> dic2;
+    Dialog dialog;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_realtime_postion_line);
+        listView = (ListView)findViewById(R.id.lineListView);
+        listView2 = (ListView)findViewById(R.id.lineListView2);
+        position = getIntent().getIntExtra(KEY_LINENUM, 0);
+
+        lineChange(position);
+        allStation();
+
+    }
+
+    private void allStation() {
+        // 전체역 api 받아와서 리싸이클러뷰 출력
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://openapi.seoul.go.kr:8088/7859586b766a6f6e373963546f6b48/json/SearchSTNBySubwayLineInfo/1/100/%20/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AllStationApi allStationApi = retrofit.create(AllStationApi.class);
+
+        Call<AllStation> call = allStationApi.getAllStationData(lineNum);
+        call.enqueue(new Callback<AllStation>() {
+            @Override
+            public void onResponse(Call<AllStation> call, Response<AllStation> response) {
+                if(response.isSuccessful()){
+                    AllStation result = response.body();
+                    List<Row> rowList =  result.getSearchSTNBySubwayLineInfo().getRow();
+
+                    // hashmap 형태로 만들기
+                    HashMap<String, String> dic = new HashMap<String, String>();
+                    for(int i=0; i<rowList.size(); i++){
+                        String key = rowList.get(i).getFrCode();
+                        String value = rowList.get(i).getStationNm();
+                        dic.put(key,value);
+                    }
+                    // 맵 key 기준 정렬
+                    sortedStationMap = new TreeMap<>(dic);
+                    realtimePosition(lineNum);
+                }
+            }
+            @Override
+            public void onFailure(Call<AllStation> call, Throwable t) {
+            }
+        });
+        // 전체역 api 받아와서 리싸이클러뷰 출력
+    }
+
+    // 리스트뷰 출력
+    private void listviewPrint(Map<String,String> sortedMap) {
+        allStationData = new ArrayList<AllStationData>();
+        allStationData2 = new ArrayList<AllStationData>();
+        Iterator<Map.Entry<String,String>> it = sortedMap.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String,String> entrySet = (Map.Entry<String, String>) it.next();
+            allStationData.add(new AllStationData(entrySet.getKey(), entrySet.getValue(), upPositionList));
+            allStationData2.add(new AllStationData(entrySet.getKey(), entrySet.getValue(), downPositionList));
+            Log.d("test","test");
+        }
+        final AllStationAdapter allStationAdapter = new AllStationAdapter(this,allStationData);
+        final AllStationAdapter2 allStationAdapter2 = new AllStationAdapter2(this,allStationData2);
+        listView.setAdapter(allStationAdapter);
+        listView2.setAdapter(allStationAdapter2);
+
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {        // 상행선 클릭시
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                Toast.makeText(RealtimePositionLine2.this,position+"클릭", Toast.LENGTH_SHORT).show();
+            }
+        });
+        listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {        //하행선 클릭시
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                Toast.makeText(RealtimePositionLine2.this,position+"클릭", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // 실시간 지하철 위치 api 받아와서 출력
+    private void realtimePosition(String lineNum) {
+        Retrofit realtimeRetrofit = new Retrofit.Builder()
+                .baseUrl("http://swopenapi.seoul.go.kr/api/subway/65425773516a6f6e36396452775575/json/realtimePosition/0/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitApi retrofitApi = realtimeRetrofit.create(RetrofitApi.class);
+        Call<RealtimePositionList> realtimeCall = retrofitApi.getRealtimePositionList(lineNum);
+        realtimeCall.enqueue(new Callback<RealtimePositionList>() {
+            @Override
+            public void onResponse(Call<RealtimePositionList> call, Response<RealtimePositionList> response) {
+                if(response.isSuccessful()){
+                    RealtimePositionList result2 = response.body();
+                    List<RealtimePosition> realtimePositionList = result2.getRealtimePositionList();
+
+                    upPositionList = new ArrayList<>(); // 상행열차 담을 리스트
+                    downPositionList = new ArrayList<>(); // 하행열차 담을 리스트
+
+
+                    for(RealtimePosition position: realtimePositionList) {
+                        // 상행이거나 외선일 경우 upArrivalList
+                        if (position.getUpdnLine().equals("0")) {
+                            PositionData arrTemp = new PositionData();
+                            arrTemp.setTrainNo(position.getTrainNo());
+                            arrTemp.setStatnNm(position.getStatnNm());
+                            arrTemp.setUpdnLine(position.getUpdnLine());
+                            arrTemp.setTrainSttus(position.getTrainSttus());
+                            arrTemp.setDirectAt(position.getDirectAt());
+                            upPositionList.add(arrTemp);
+                        } else {
+                            PositionData arrTemp = new PositionData();
+                            arrTemp.setTrainNo(position.getTrainNo());
+                            arrTemp.setStatnNm(position.getStatnNm());
+                            arrTemp.setUpdnLine(position.getUpdnLine());
+                            arrTemp.setTrainSttus(position.getTrainSttus());
+                            arrTemp.setDirectAt(position.getDirectAt());
+                            downPositionList.add(arrTemp);
+                        }
+                    }
+                    listviewPrint(sortedStationMap);
+                }
+            }
+            @Override
+            public void onFailure(Call<RealtimePositionList> call, Throwable t) {
+
+            }
+        });
+        // 실시간 지하철 위치 api 받아와서 출력
+    }
+
+    private void lineChange(int position) {
+        if(position == 1){
+            lineNum = "1호선";
+        } else if(position == 2){
+            lineNum = "2호선";
+        } else if(position == 3){
+            lineNum = "3호선";
+        } else if(position == 4){
+            lineNum = "4호선";
+        } else if(position == 5){
+            lineNum = "5호선";
+        } else if(position == 6){
+            lineNum = "6호선";
+        } else if(position == 7){
+            lineNum = "7호선";
+        } else if(position == 8){
+            lineNum = "8호선";
+        } else if(position == 9){
+            lineNum = "9호선";
+        } else if(position == 10){
+            lineNum = "수인분당선";
+        } else if(position == 11){
+            lineNum = "경춘선";
+        } else if(position == 12){
+            lineNum = "공항철도";
+        } else if(position == 13){
+            lineNum = "신분당선";
+        } else {
+            lineNum = "우이신설경전철";
+        }
+
+    }
+
+}

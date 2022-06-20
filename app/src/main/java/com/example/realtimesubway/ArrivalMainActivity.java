@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.realtimesubway.ArrivalSection.Data.Station.Row;
-import com.example.realtimesubway.ArrivalSection.Data.Station.SearchInfoBySubwayNameService;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Station.Row;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Station.SearchInfoBySubwayNameService;
 import com.example.realtimesubway.ArrivalSection.Data.Line.SubwayDataPrintViewPager;
 import com.example.realtimesubway.ArrivalSection.Data.Retrofit.StationRetrofit.StationApi;
 import com.example.realtimesubway.ArrivalSection.Data.SearchFilter.SearchAdapter;

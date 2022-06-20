@@ -4,10 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PositionSection.RealtimePositionLine">
+    tools:context=".PositionSection.RealtimePositionLine2">
 
-    <ListView
-        android:id="@+id/lineListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="25dp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="실시간 열차 위치"/>
+            <View
+                android:background="#D5D5D5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ListView
+                    android:id="@+id/lineListView"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <View
+                    android:background="#D5D5D5"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"/>
+
+                <ListView
+                    android:id="@+id/lineListView2"
+                    android:layout_weight="1"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

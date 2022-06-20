@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/position_item_lineList_linear1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:ignore="MissingConstraints">
 
         <TextView
-            android:id="@+id/position_item_lineText"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"
-            android:gravity="center"
             android:text="text"
-            android:textColor="#3E3E3E"
-            android:textSize="20dp" />
+            android:id="@+id/Text_lineList"
+            android:layout_width="100dp"
+            android:layout_height="35dp" />
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="35dp"
+            android:layout_height="35dp"/>
 
     </LinearLayout>
 

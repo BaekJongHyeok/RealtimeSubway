@@ -1,4 +1,4 @@
-package com.example.realtimesubway.ArrivalSection.Data.Station;
+package com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Station;
 
 public class StationLine {
     private String lineNum;

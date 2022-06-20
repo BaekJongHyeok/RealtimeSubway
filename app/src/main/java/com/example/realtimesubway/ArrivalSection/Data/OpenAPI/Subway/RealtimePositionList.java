@@ -1,4 +1,4 @@
-package com.example.realtimesubway.ArrivalSection.Data.Subway;
+package com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

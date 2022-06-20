@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.realtimesubway.PositionSection.LineList.LineListAdapter;
 import com.example.realtimesubway.PositionSection.LineList.LineListData;
-import com.example.realtimesubway.PositionSection.RealtimePositionLine;
+import com.example.realtimesubway.PositionSection.RealtimePositionLine2;
 
 import java.util.ArrayList;
 
@@ -36,13 +36,10 @@ public class PositionMainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if(position == 0){
-                    Intent intent = new Intent(PositionMainActivity.this, RealtimePositionLine.class);
-                    intent.putExtra(RealtimePositionLine.KEY_LINENUM,position);
+
+                    Intent intent = new Intent(PositionMainActivity.this, RealtimePositionLine2.class);
+                    intent.putExtra(RealtimePositionLine2.KEY_LINENUM,position+1);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(PositionMainActivity.this, (position+1) + "버튼 클릭", Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }

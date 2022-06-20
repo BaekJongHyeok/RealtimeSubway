@@ -1,9 +1,9 @@
-package com.example.realtimesubway.ArrivalSection.Data.SubwayArrival;
+package com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ErrorMessageArrival  {
+public class ErrorMessage {
 
     @SerializedName("status")
     @Expose

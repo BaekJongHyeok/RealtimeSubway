@@ -1,11 +1,11 @@
-package com.example.realtimesubway.ArrivalSection.Data.Station;
+package com.example.realtimesubway.PositionSection.AllStation.OpenApi;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Data {
+public class SearchSTNBySubwayLineInfo  {
 
     @SerializedName("list_total_count")
     @Expose
@@ -15,7 +15,7 @@ public class Data {
     private Result result;
     @SerializedName("row")
     @Expose
-    private List<Row> row;
+    private List<Row> row = null;
 
     public Integer getListTotalCount() {
         return listTotalCount;

@@ -1,6 +1,6 @@
 package com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit;
 
-import com.example.realtimesubway.ArrivalSection.Data.Subway.RealtimePositionList;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePositionList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

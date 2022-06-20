@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.realtimesubway.ArrivalSection.Data.Subway.PositionData;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
 import com.example.realtimesubway.R;
 
 import java.util.List;

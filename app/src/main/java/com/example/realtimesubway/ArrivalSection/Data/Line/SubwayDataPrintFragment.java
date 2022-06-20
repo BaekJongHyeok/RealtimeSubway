@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.realtimesubway.ArrivalSection.Data.Subway.RealtimePosition;
-import com.example.realtimesubway.ArrivalSection.Data.Subway.RealtimePositionList;
-import com.example.realtimesubway.ArrivalSection.Data.SubwayArrival.Arrival;
-import com.example.realtimesubway.ArrivalSection.Data.SubwayArrival.RealtimeArrival;
-import com.example.realtimesubway.ArrivalSection.Data.SubwayArrival.RealtimeArrivalList;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePosition;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePositionList;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.SubwayArrival.Arrival;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.SubwayArrival.RealtimeArrival;
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.SubwayArrival.RealtimeArrivalList;
 import com.example.realtimesubway.R;
 import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.ArrivalAdapter;
 import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.ArrivalApi;

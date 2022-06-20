@@ -1,9 +1,9 @@
-package com.example.realtimesubway.ArrivalSection.Data.Station;
+package com.example.realtimesubway.PositionSection.AllStation.OpenApi;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+public class Result  {
 
     @SerializedName("CODE")
     @Expose
@@ -27,4 +27,5 @@ public class Result {
     public void setMessage(String message) {
         this.message = message;
     }
+
 }

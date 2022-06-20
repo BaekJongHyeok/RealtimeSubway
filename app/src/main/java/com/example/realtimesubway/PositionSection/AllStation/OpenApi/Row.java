@@ -1,9 +1,9 @@
-package com.example.realtimesubway.ArrivalSection.Data.Station;
+package com.example.realtimesubway.PositionSection.AllStation.OpenApi;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Row  {
+public class Row {
 
     @SerializedName("STATION_CD")
     @Expose
@@ -11,6 +11,9 @@ public class Row  {
     @SerializedName("STATION_NM")
     @Expose
     private String stationNm;
+    @SerializedName("STATION_NM_ENG")
+    @Expose
+    private String stationNmEng;
     @SerializedName("LINE_NUM")
     @Expose
     private String lineNum;
@@ -27,9 +30,6 @@ public class Row  {
     }
 
     public String getStationNm() {
-        if(stationNm.equals("서울역")){
-            stationNm = "서울";
-        }
         return stationNm;
     }
 
@@ -37,15 +37,17 @@ public class Row  {
         this.stationNm = stationNm;
     }
 
-    public String getLineNum() {
-        String stripLineNum = lineNum.substring(0,lineNum.length());
-        if(stripLineNum.equals("우이신설경전철")){
-             stripLineNum = "우이신설선";
-        } else {
-        }
-        return stripLineNum;
+    public String getStationNmEng() {
+        return stationNmEng;
     }
 
+    public void setStationNmEng(String stationNmEng) {
+        this.stationNmEng = stationNmEng;
+    }
+
+    public String getLineNum() {
+        return lineNum;
+    }
 
     public void setLineNum(String lineNum) {
         this.lineNum = lineNum;
