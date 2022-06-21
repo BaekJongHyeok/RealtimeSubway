@@ -9,6 +9,7 @@ public class PositionData {
     private String trainSttus;
     private String trainNo;
     private String directAt;
+    private String statnTnm;
 
     public PositionData(){};
 
@@ -74,5 +75,13 @@ public class PositionData {
 
     public void setTrainNo(String trainNo) {
         this.trainNo = trainNo;
+    }
+
+    public String getStatnTnm() {
+        return statnTnm;
+    }
+
+    public void setStatnTnm(String statnTnm) {
+        this.statnTnm = statnTnm;
     }
 }

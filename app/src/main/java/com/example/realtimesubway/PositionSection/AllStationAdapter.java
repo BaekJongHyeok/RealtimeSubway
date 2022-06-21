@@ -16,11 +16,14 @@ public class AllStationAdapter extends BaseAdapter {
     Context mContext = null;
     LayoutInflater layoutInflater = null;
     ArrayList<AllStationData> allStationData;
+    String lineNume = null;
 
-    public AllStationAdapter(Context context, ArrayList<AllStationData> data){
+    public AllStationAdapter(Context context, ArrayList<AllStationData> data, String lineNum){
         mContext = context;
         allStationData = data;
         layoutInflater = LayoutInflater.from(context);
+        lineNume = lineNum;
+
     }
 
     @Override
@@ -42,18 +45,91 @@ public class AllStationAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = layoutInflater.inflate(R.layout.position_item_stationlinemap, null);
         TextView text_lineList = (TextView)view.findViewById(R.id.Text_lineList);
+        TextView text_boundary = (TextView)view.findViewById(R.id.subwayLine_boundary);
         ImageView image_status = (ImageView) view.findViewById(R.id.image);
-        //TextView text_downLine = (TextView)view.findViewById(R.id.Text_downline);
-        text_lineList.setText(allStationData.get(position).getStationName());
-        AllStationData path = allStationData.get(position);
 
-        for(int i=0; i<path.getUpdnLine().size(); i++){
-            if(path.getUpdnLine().get(i).getStatnNm().equals(path.getStationName())){
-                image_status.setImageResource(R.drawable.upline);
+    // 분기점마다 어느 방면인지 출력
+        text_boundary.setVisibility(View.INVISIBLE);
+        String confirmStatnNm = allStationData.get(position).getStationName();
+        if(lineNume.equals("1호선")){
+            if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
+                text_boundary.setText(allStationData.get(0).getStationName() + " >> 구로");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("인천")){
+                text_boundary.setText("인천 >> 구로");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("구로")){
+                text_boundary.setText("구로 >> 소요산");
+                text_boundary.setVisibility(View.VISIBLE);
+            }
+        } else if(lineNume.equals("5호선")){
+            if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
+                text_boundary.setText(allStationData.get(0).getStationName() + " >> 강동");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("하남검단산")){
+                text_boundary.setText("하남검단산 >> 강동");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("강동")){
+                text_boundary.setText("강동 >> 방화");
+                text_boundary.setVisibility(View.VISIBLE);
+            }
+        } else if(lineNume.equals("경춘선")){
+            if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
+                text_boundary.setText(allStationData.get(0).getStationName() + " >> 상봉");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("중랑")){
+                text_boundary.setText("상봉 >> 청량리");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("광운대")){
+                text_boundary.setText("상봉 >> 광운대");
+                text_boundary.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
+                text_boundary.setText(allStationData.get(0).getStationName() + " >> " + allStationData.get(allStationData.size()-1).getStationName());
+                text_boundary.setVisibility(View.VISIBLE);
             }
         }
 
-       // text_downLine.setText(allStationData.get(position).getDownLine().getTrainSttus());
+
+
+    // 역 출력
+        text_lineList.setText(confirmStatnNm);
+        AllStationData path = allStationData.get(position);
+
+        for(int i=0; i<path.getUpdnLine().size(); i++){
+            if(path.getUpdnLine().get(i).getStatnNm().equals(confirmStatnNm)){
+                if(lineNume.equals("1호선")){
+                    image_status.setImageResource(R.drawable.line1);
+                } else if(lineNume.equals("2호선")){
+                    image_status.setImageResource(R.drawable.line2);
+                } else if(lineNume.equals("3호선")){
+                    image_status.setImageResource(R.drawable.line3);
+                } else if(lineNume.equals("4호선")){
+                    image_status.setImageResource(R.drawable.line4);
+                } else if(lineNume.equals("5호선")){
+                    image_status.setImageResource(R.drawable.line5);
+                } else if(lineNume.equals("6호선")){
+                    image_status.setImageResource(R.drawable.line6);
+                } else if(lineNume.equals("7호선")){
+                    image_status.setImageResource(R.drawable.line7);
+                } else if(lineNume.equals("8호선")){
+                    image_status.setImageResource(R.drawable.line8);
+                } else if(lineNume.equals("9호선")){
+                    image_status.setImageResource(R.drawable.line9);
+                } else if(lineNume.equals("수인분당선")){
+                    image_status.setImageResource(R.drawable.line10);
+                } else if(lineNume.equals("경춘선")){
+                    image_status.setImageResource(R.drawable.line11);
+                } else if(lineNume.equals("공항철도")){
+                    image_status.setImageResource(R.drawable.line12);
+                } else if(lineNume.equals("신분당선")){
+                    image_status.setImageResource(R.drawable.line13);
+                } else {
+                    image_status.setImageResource(R.drawable.line14);
+                }
+            }
+        }
         return view;
     }
 }
