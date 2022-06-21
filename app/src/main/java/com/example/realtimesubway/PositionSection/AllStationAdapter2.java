@@ -51,8 +51,39 @@ public class AllStationAdapter2 extends BaseAdapter {
      // 분기점마다 어느 방면인지 출력
         text_boundary.setVisibility(View.INVISIBLE);
         String confirmStatnNm = allStationData.get(position).getStationName();
-        if(lineNume.equals("1호선") || lineNume.equals("2호선") || lineNume.equals("5호선") || lineNume.equals("경춘선")){
-
+        if(lineNume.equals("1호선")){
+            if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
+                text_boundary.setText(allStationData.get(0).getStationName() + " >> 구로");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("구일")){
+                text_boundary.setText("구로 >> 인천");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("가산디지털단지")){
+                text_boundary.setText("구로 >> 신창");
+                text_boundary.setVisibility(View.VISIBLE);
+            }
+        } else if(lineNume.equals("5호선")){
+            if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
+                text_boundary.setText(allStationData.get(0).getStationName() + " >> 강동");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("둔촌동")){
+                text_boundary.setText("강동 >> 마천");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("길동")){
+                text_boundary.setText("강동 >> 하남검단산");
+                text_boundary.setVisibility(View.VISIBLE);
+            }
+        } else if(lineNume.equals("경춘선")){
+            if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
+                text_boundary.setText(allStationData.get(0).getStationName() + " >> 상봉");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("청량리")){
+                text_boundary.setText("청량리 >> 상봉");
+                text_boundary.setVisibility(View.VISIBLE);
+            } else if(confirmStatnNm.equals("상봉")) {
+                text_boundary.setText("상봉 >> 춘천");
+                text_boundary.setVisibility(View.VISIBLE);
+            }
         } else {
             if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
                 text_boundary.setText(allStationData.get(0).getStationName() + " >> " + allStationData.get(allStationData.size()-1).getStationName());
