@@ -48,9 +48,8 @@ public class RealtimePositionLine2 extends AppCompatActivity{
     List<PositionData> upPositionList;
     List<PositionData> downPositionList;
     Dialog dialog;
+    CustomDialog upCustomDialog, downCustomDialog;
     Button btn_On, btn_Off, btn_refresh;
-
-
 
 
     @Override
@@ -70,12 +69,28 @@ public class RealtimePositionLine2 extends AppCompatActivity{
         btn_On.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startService(new Intent(RealtimePositionLine2.this, AlarmService.class));
+                try {
+                    if (upCustomDialog.trainNo != null){
+                        Intent intent = new Intent(getApplicationContext(), AlarmService.class);
+                        intent.putExtra("lineNum",lineNum);
+                        intent.putExtra("destination", upCustomDialog.destination);
+                        intent.putExtra("trainNo", upCustomDialog.trainNo);
+                        intent.putExtra("beforePosition", upCustomDialog.beforePosition);
+                        startService(intent);
+                    } else {
+                        Toast.makeText(RealtimePositionLine2.this, "설정된 알람이 없습니다.",Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e){
+                    Toast.makeText(RealtimePositionLine2.this, "설정된 알람이 없습니다.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
         btn_Off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AlarmService.class);
+                stopService(intent);
             }
         });
         btn_refresh.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +136,6 @@ public class RealtimePositionLine2 extends AppCompatActivity{
                     reverseSortedStationMap.putAll(dic);
 
                     realtimePosition(lineNum);
-                    Log.d("test","test");
                 }
             }
             @Override
@@ -140,13 +154,11 @@ public class RealtimePositionLine2 extends AppCompatActivity{
         while(it.hasNext()){
             Map.Entry<String,String> entrySet = (Map.Entry<String, String>) it.next();
             upAllStationData.add(new AllStationData(entrySet.getKey(), entrySet.getValue(), upPositionList));
-            Log.d("test","test");
         }
         Iterator<Map.Entry<String,String>> it2 = sortedMap.entrySet().iterator();
         while(it2.hasNext()){
             Map.Entry<String,String> entrySet = (Map.Entry<String, String>) it2.next();
             downAllStationData.add(new AllStationData(entrySet.getKey(), entrySet.getValue(), downPositionList));
-            Log.d("test","test");
         }
 
 
@@ -155,20 +167,18 @@ public class RealtimePositionLine2 extends AppCompatActivity{
         upLineListView.setAdapter(allStationAdapter);
         downLineListView.setAdapter(allStationAdapter2);
 
-
-
         upLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {        // 상행선 클릭시
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                CustomDialog customDialog = new CustomDialog(RealtimePositionLine2.this);
-                customDialog.callFunction(upAllStationData, upPositionList, position);;
+                upCustomDialog = new CustomDialog(RealtimePositionLine2.this);
+                upCustomDialog.callFunction(upAllStationData, upPositionList, position);;
             }
         });
         downLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {        //하행선 클릭시
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                CustomDialog customDialog = new CustomDialog(RealtimePositionLine2.this);
-                customDialog.callFunction(downAllStationData, downPositionList, position);
+                downCustomDialog = new CustomDialog(RealtimePositionLine2.this);
+                downCustomDialog.callFunction(downAllStationData, downPositionList, position);
             }
         });
     }

@@ -1,9 +1,7 @@
 package com.example.realtimesubway.PositionSection;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -13,17 +11,16 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
 import com.example.realtimesubway.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 public class CustomDialog {
     private Context context;
+    public int beforePosition = 0; // 몇전역
+    public String trainNo, destination; // 지하철 번호, 목적지
     public CustomDialog(Context context){
         this.context = context;
     }
@@ -48,12 +45,14 @@ public class CustomDialog {
 
     // 지하철 세부정보 출력
         for(int i = 0; i<positionList.size(); i++){
-            if(positionList.get(i).getStatnNm().equals(allstationData.get(position).getStationName())){
+            PositionData plGet = positionList.get(i);
+            if(plGet.getStatnNm().equals(allstationData.get(position).getStationName())){
                 dialog.show();
-                text_trainNo.setText(positionList.get(i).getTrainNo());
-                text_statnTnm.setText(positionList.get(i).getStatnTnm() + "역");
-                text_statnNm.setText(positionList.get(i).getStatnNm() + "역");
-                if(positionList.get(i).getDirectAt().equals("1")){
+                text_trainNo.setText(plGet.getTrainNo());
+                text_statnTnm.setText(plGet.getStatnTnm() + "역");
+                text_statnNm.setText(plGet.getStatnNm() + "역");
+                trainNo = plGet.getTrainNo();
+                if(plGet.getDirectAt().equals("1")){
                     text_directAt.setText("급행");
                 } else {
                     text_directAt.setText("완행");
@@ -76,7 +75,7 @@ public class CustomDialog {
         sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                destination = sp.getSelectedItem().toString();
             }
 
             @Override
@@ -92,10 +91,13 @@ public class CustomDialog {
                 String result = "";
                 if(before1.isChecked() == true) {
                     result = before1.getText().toString() + "에서 알려드리겠습니다.";
+                    beforePosition = 1;
                 } else if(before2.isChecked() == true) {
                     result = before2.getText().toString() + "에서 알려드리겠습니다.";
+                    beforePosition = 2;
                 } else if(before3.isChecked() == true) {
                     result = before3.getText().toString() + "에서 알려드리겠습니다.";
+                    beforePosition = 3;
                 } else {
                     result = "1개의 옵션을 선택하여 주십시오.";
                 }
