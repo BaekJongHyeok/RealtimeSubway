@@ -1,10 +1,14 @@
 package com.example.realtimesubway.PositionSection;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.Log;
@@ -13,6 +17,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.loader.content.AsyncTaskLoader;
+
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePosition;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePositionList;
@@ -20,6 +29,7 @@ import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.Re
 import com.example.realtimesubway.PositionSection.AllStation.OpenApi.AllStation;
 import com.example.realtimesubway.PositionSection.AllStation.OpenApi.Row;
 import com.example.realtimesubway.PositionSection.AllStation.Retrofit.AllStationApi;
+import com.example.realtimesubway.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,6 +89,7 @@ public class AlarmService extends Service {
         public void run(){
             while(true){
     //  trainNo와 같은 번호를 가진 지하철의 현재 위치가 destination - beforeposition 위치에 도착할때까지 계속 현재위치 api를 갱신해서 확인
+                initializeNotification();
                 value++;
                 reRealtimePosition();
     //  해당위치에 도착하면 알람
@@ -88,6 +99,31 @@ public class AlarmService extends Service {
                     e.printStackTrace();
                 }
             }
+        }
+
+        private void initializeNotification() {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "1");
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle();
+            style.bigText("설정을 보려면 누르세요.");
+            style.setBigContentTitle(null);
+            style.setSummaryText("서비스 동작중");
+            builder.setContentText(null);
+            builder.setContentTitle(null);
+            builder.setOngoing(true);
+            builder.setStyle(style);
+            builder.setWhen(0);
+            builder.setShowWhen(false);
+
+            Intent notificationIntent = new Intent(getApplicationContext(), RealtimePositionLine2.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+            builder.setContentIntent(pendingIntent);
+            NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+                manager.createNotificationChannel(new NotificationChannel("1", "포그라운드 서비스", NotificationManager.IMPORTANCE_NONE));
+            }
+            Notification notification = builder.build();
+            startForeground(1, notification);
         }
     }
 

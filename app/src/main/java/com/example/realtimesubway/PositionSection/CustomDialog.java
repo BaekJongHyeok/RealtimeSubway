@@ -1,7 +1,11 @@
 package com.example.realtimesubway.PositionSection;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -21,9 +25,16 @@ public class CustomDialog {
     private Context context;
     public int beforePosition = 0; // 몇전역
     public String trainNo, destination; // 지하철 번호, 목적지
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    String storeTrainNo, storeLineNum, storeDestination;
+    int storeBeforePosition;
+
+
     public CustomDialog(Context context){
         this.context = context;
     }
+
 
 
     public void callFunction(ArrayList<AllStationData> allstationData, List<PositionData> positionList, int position){
@@ -102,11 +113,27 @@ public class CustomDialog {
                     result = "1개의 옵션을 선택하여 주십시오.";
                 }
                 text_result_checkBox.setText(result);
+
+                /*SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPreferences", Activity.MODE_PRIVATE);
+                editor = sharedPreferences.edit();
+                // 저장해둔 값 불러오기
+                storeTrainNo = sharedPreferences.getString("storeTrainNo","");
+                storeLineNum = sharedPreferences.getString("storeLineNum","");
+                storeDestination = sharedPreferences.getString("storeDestination","");
+                storeBeforePosition = sharedPreferences.getInt("storeBeforePosition",0);
+
+                storeTrainNo = trainNo;
+                //storeLineNum = lineNum;
+                storeDestination = destination;
+                storeBeforePosition = beforePosition;
+                //editor.putString("linNum",storeLineNum);
+                editor.putString("trainNo",storeTrainNo);
+                editor.putString("destination",storeDestination);
+                editor.putInt("beforePosition", storeBeforePosition);*/
+
+                Log.d("test", "onClick: " + storeTrainNo);
             }
         });
-
-
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

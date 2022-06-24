@@ -1,17 +1,15 @@
 package com.example.realtimesubway.PositionSection;
 
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePosition;
@@ -39,16 +37,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RealtimePositionLine2 extends AppCompatActivity{
     public static final String KEY_LINENUM = "linenum";
     int position;
-
-    SwipeRefreshLayout swipeRefreshLayout;
     TreeMap<String, String> sortedStationMap, reverseSortedStationMap;
-    ArrayList<AllStationData> upAllStationData, downAllStationData;
-    ListView upLineListView, downLineListView;
+    ArrayList<AllStationData> AllStationData;
+    ListView upLineListView;
     String lineNum; // 변환받은 라인 이름을 넣어줄 변수
     List<PositionData> upPositionList;
     List<PositionData> downPositionList;
-    Dialog dialog;
-    CustomDialog upCustomDialog, downCustomDialog;
+    CustomDialog customDialog;
     Button btn_On, btn_Off, btn_refresh;
 
 
@@ -57,7 +52,6 @@ public class RealtimePositionLine2 extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_realtime_postion_line);
         upLineListView = (ListView)findViewById(R.id.lineListView);
-        downLineListView = (ListView)findViewById(R.id.lineListView2);
         btn_On = (Button)findViewById(R.id.btn_alramOn);
         btn_Off = (Button)findViewById(R.id.btn_alramOff);
         btn_refresh = (Button)findViewById(R.id.btn_refresh);
@@ -66,16 +60,19 @@ public class RealtimePositionLine2 extends AppCompatActivity{
         lineChange(position);
         allStation();
 
-        btn_On.setOnClickListener(new View.OnClickListener() {
+        alarmListener alarmListener = new alarmListener();
+        btn_On.setOnClickListener(alarmListener);
+
+        /*btn_On.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    if (upCustomDialog.trainNo != null){
+                    if (customDialog.trainNo != null){
                         Intent intent = new Intent(getApplicationContext(), AlarmService.class);
                         intent.putExtra("lineNum",lineNum);
-                        intent.putExtra("destination", upCustomDialog.destination);
-                        intent.putExtra("trainNo", upCustomDialog.trainNo);
-                        intent.putExtra("beforePosition", upCustomDialog.beforePosition);
+                        intent.putExtra("destination", customDialog.destination);
+                        intent.putExtra("trainNo", customDialog.trainNo);
+                        intent.putExtra("beforePosition", customDialog.beforePosition);
                         startService(intent);
                     } else {
                         Toast.makeText(RealtimePositionLine2.this, "설정된 알람이 없습니다.",Toast.LENGTH_SHORT).show();
@@ -84,7 +81,7 @@ public class RealtimePositionLine2 extends AppCompatActivity{
                     Toast.makeText(RealtimePositionLine2.this, "설정된 알람이 없습니다.",Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
         btn_Off.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,12 +93,33 @@ public class RealtimePositionLine2 extends AppCompatActivity{
         btn_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lineChange(position);
                 allStation();
             }
         });
 
     }
+
+    class alarmListener implements View.OnClickListener{
+        @Override
+        public void onClick(View view){
+            try {
+                if (customDialog.trainNo != null){
+                    Intent intent = new Intent(getApplicationContext(), AlarmService.class);
+                    intent.putExtra("lineNum",lineNum);
+                    intent.putExtra("destination", customDialog.destination);
+                    intent.putExtra("trainNo", customDialog.trainNo);
+                    intent.putExtra("beforePosition", customDialog.beforePosition);
+                    startService(intent);
+                } else {
+                    Toast.makeText(RealtimePositionLine2.this, "설정된 알람이 없습니다.",Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e){
+                Toast.makeText(RealtimePositionLine2.this, "에러발생",Toast.LENGTH_SHORT).show();
+            }
+            Toast.makeText(getApplicationContext(), "테스트", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void allStation() {
         // 전체역 api 받아와서 리싸이클러뷰 출력
@@ -147,40 +165,18 @@ public class RealtimePositionLine2 extends AppCompatActivity{
 
     // 리스트뷰 출력
     private void listviewPrint(Map<String,String> sortedMap, Map<String,String> reverseSortedMap) {
-        upAllStationData = new ArrayList<AllStationData>();
-        downAllStationData = new ArrayList<AllStationData>();
+        AllStationData = new ArrayList<AllStationData>();
 
         Iterator<Map.Entry<String,String>> it = reverseSortedMap.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry<String,String> entrySet = (Map.Entry<String, String>) it.next();
-            upAllStationData.add(new AllStationData(entrySet.getKey(), entrySet.getValue(), upPositionList));
-        }
-        Iterator<Map.Entry<String,String>> it2 = sortedMap.entrySet().iterator();
-        while(it2.hasNext()){
-            Map.Entry<String,String> entrySet = (Map.Entry<String, String>) it2.next();
-            downAllStationData.add(new AllStationData(entrySet.getKey(), entrySet.getValue(), downPositionList));
+            AllStationData.add(new AllStationData(entrySet.getKey(), entrySet.getValue(), upPositionList, downPositionList));
         }
 
+        final AllStationAdapter allStationAdapter = new AllStationAdapter(this, AllStationData, lineNum, upPositionList, downPositionList);
 
-        final AllStationAdapter allStationAdapter = new AllStationAdapter(this, upAllStationData,lineNum);
-        final AllStationAdapter2 allStationAdapter2 = new AllStationAdapter2(this, downAllStationData,lineNum);
         upLineListView.setAdapter(allStationAdapter);
-        downLineListView.setAdapter(allStationAdapter2);
-
-        upLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {        // 상행선 클릭시
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                upCustomDialog = new CustomDialog(RealtimePositionLine2.this);
-                upCustomDialog.callFunction(upAllStationData, upPositionList, position);;
-            }
-        });
-        downLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {        //하행선 클릭시
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                downCustomDialog = new CustomDialog(RealtimePositionLine2.this);
-                downCustomDialog.callFunction(downAllStationData, downPositionList, position);
-            }
-        });
+        allStationAdapter.notifyDataSetChanged();
     }
 
     // 실시간 지하철 위치 api 받아와서 출력

@@ -9,11 +9,13 @@ import java.util.List;
 public class AllStationData {
     private String stationName;
     private String frCode;
-    private List<PositionData> updnLine;
+    private List<PositionData> upLine;
+    private List<PositionData> downLine;
 
-    public AllStationData(String frCode, String stationName, List<PositionData> updnLine) {
+    public AllStationData(String frCode, String stationName, List<PositionData> upLine, List<PositionData> downLine) {
         this.stationName = stationName;
-        this.updnLine = updnLine;
+        this.upLine = upLine;
+        this.downLine = downLine;
     }
 
     public String getStationName() {
@@ -24,11 +26,19 @@ public class AllStationData {
         return this.frCode;
     }
 
-    public List<PositionData> getUpdnLine() {
-        return updnLine;
+    public List<PositionData> getUpLine() {
+        return upLine;
     }
 
-    public void setUpdnLine(List<PositionData> updnLine) {
-        this.updnLine = updnLine;
+    public void setUpLine(List<PositionData> upLine) {
+        this.upLine = upLine;
+    }
+
+    public List<PositionData> getDownLine() {
+        return downLine;
+    }
+
+    public void setDownLine(List<PositionData> downLine) {
+        this.downLine = downLine;
     }
 }

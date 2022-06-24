@@ -5,25 +5,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
 import com.example.realtimesubway.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AllStationAdapter extends BaseAdapter {
     Context mContext = null;
     LayoutInflater layoutInflater = null;
     ArrayList<AllStationData> allStationData;
+    List<PositionData> upPosList, downPosList;
     String lineNume = null;
+    CustomDialog upCustomDialog, downCustomDialog;
 
-    public AllStationAdapter(Context context, ArrayList<AllStationData> data, String lineNum){
+    public AllStationAdapter(Context context, ArrayList<AllStationData> data, String lineNum, List<PositionData> upPositionList, List<PositionData> downPositionList){
         mContext = context;
         allStationData = data;
         layoutInflater = LayoutInflater.from(context);
         lineNume = lineNum;
-
+        upPosList = upPositionList;
+        downPosList = downPositionList;
     }
 
     @Override
@@ -46,11 +52,12 @@ public class AllStationAdapter extends BaseAdapter {
         View view = layoutInflater.inflate(R.layout.position_item_stationlinemap, null);
         TextView text_lineList = (TextView)view.findViewById(R.id.Text_lineList);
         TextView text_boundary = (TextView)view.findViewById(R.id.subwayLine_boundary);
-        ImageView image_status = (ImageView) view.findViewById(R.id.image);
-
+        ImageButton image_statusUp = (ImageButton) view.findViewById(R.id.imageUp);
+        ImageButton image_statusDown = (ImageButton) view.findViewById(R.id.imageDown);
+        String confirmStatnNm = allStationData.get(position).getStationName();
     // 분기점마다 어느 방면인지 출력
         text_boundary.setVisibility(View.INVISIBLE);
-        String confirmStatnNm = allStationData.get(position).getStationName();
+
         if(lineNume.equals("1호선")){
             if(confirmStatnNm.equals(allStationData.get(0).getStationName())){
                 text_boundary.setText(allStationData.get(0).getStationName() + " >> 구로");
@@ -91,45 +98,37 @@ public class AllStationAdapter extends BaseAdapter {
             }
         }
 
-
-
     // 역 출력
         text_lineList.setText(confirmStatnNm);
         AllStationData path = allStationData.get(position);
 
-        for(int i=0; i<path.getUpdnLine().size(); i++){
-            if(path.getUpdnLine().get(i).getStatnNm().equals(confirmStatnNm)){
-                if(lineNume.equals("1호선")){
-                    image_status.setImageResource(R.drawable.line1);
-                } else if(lineNume.equals("2호선")){
-                    image_status.setImageResource(R.drawable.line2);
-                } else if(lineNume.equals("3호선")){
-                    image_status.setImageResource(R.drawable.line3);
-                } else if(lineNume.equals("4호선")){
-                    image_status.setImageResource(R.drawable.line4);
-                } else if(lineNume.equals("5호선")){
-                    image_status.setImageResource(R.drawable.line5);
-                } else if(lineNume.equals("6호선")){
-                    image_status.setImageResource(R.drawable.line6);
-                } else if(lineNume.equals("7호선")){
-                    image_status.setImageResource(R.drawable.line7);
-                } else if(lineNume.equals("8호선")){
-                    image_status.setImageResource(R.drawable.line8);
-                } else if(lineNume.equals("9호선")){
-                    image_status.setImageResource(R.drawable.line9);
-                } else if(lineNume.equals("수인분당선")){
-                    image_status.setImageResource(R.drawable.line10);
-                } else if(lineNume.equals("경춘선")){
-                    image_status.setImageResource(R.drawable.line11);
-                } else if(lineNume.equals("공항철도")){
-                    image_status.setImageResource(R.drawable.line12);
-                } else if(lineNume.equals("신분당선")){
-                    image_status.setImageResource(R.drawable.line13);
-                } else {
-                    image_status.setImageResource(R.drawable.line14);
-                }
+        for(int i=0; i<path.getUpLine().size(); i++){
+            if(path.getUpLine().get(i).getStatnNm().equals(confirmStatnNm)){
+                image_statusUp.setImageResource(R.drawable.updirection);
             }
         }
+
+        for(int i=0; i<path.getDownLine().size(); i++){
+            if(path.getDownLine().get(i).getStatnNm().equals(confirmStatnNm)){
+                image_statusDown.setImageResource(R.drawable.downdirection);
+            }
+        }
+        image_statusUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upCustomDialog = new CustomDialog(mContext);
+                upCustomDialog.callFunction(allStationData, upPosList, position);;
+            }
+        });
+
+        image_statusDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downCustomDialog = new CustomDialog(mContext);
+                downCustomDialog.callFunction(allStationData, downPosList, position);
+            }
+        });
+
         return view;
     }
 }
