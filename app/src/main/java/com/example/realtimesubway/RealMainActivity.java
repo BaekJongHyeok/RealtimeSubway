@@ -22,6 +22,7 @@ import com.example.realtimesubway.ArrivalSection.Data.Retrofit.StationRetrofit.S
 import com.example.realtimesubway.ArrivalSection.Data.SearchFilter.SearchAdapter;
 import com.example.realtimesubway.ArrivalSection.Data.SearchFilter.SearchItem;
 import com.example.realtimesubway.ArrivalSection.Data.SearchStationLineImage.SearchStationLine;
+import com.example.realtimesubway.Common.Const;
 import com.example.realtimesubway.network.RetrofitClient;
 
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class RealMainActivity extends AppCompatActivity {
         rvSearchResult.addItemDecoration(itemDivider);
 
         // 지하철 역 전체 정보 api 세팅
-        apiService = RetrofitClient.getClient("http://openapi.seoul.go.kr:8088/635a446f6d6a6f6e3131304e52586866/json/SearchInfoBySubwayNameService/").create(StationApi.class);
+        apiService = RetrofitClient.getClient(Const.SUBWAY_STATION_URL).create(StationApi.class);
         getStationInfo();
     }
 
