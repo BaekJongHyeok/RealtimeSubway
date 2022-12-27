@@ -13,15 +13,16 @@ import com.bumptech.glide.Glide;
 import com.example.realtimesubway.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder>{
 
     private OnItemClickListener mListener = null;
-    ArrayList<SearchItem> searchItemArrayList;
+    List<SearchItem> searchItemArrayList;
     Activity activity;
 
 
-    public SearchAdapter(ArrayList<SearchItem> searchItemArrayList, Activity activity) {
+    public SearchAdapter(List<SearchItem> searchItemArrayList, Activity activity) {
         this.searchItemArrayList = searchItemArrayList;
         this.activity = activity;
     }
@@ -47,10 +48,19 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         SearchItem selected = searchItemArrayList.get(position);
         holder.stationName.setText(selected.getStationName());
-        Glide.with(activity).load(selected.getImage()).fitCenter().into(holder.imageView);
-        Glide.with(activity).load(selected.getImage2()).fitCenter().into(holder.imageView2);
-        Glide.with(activity).load(selected.getImage3()).fitCenter().into(holder.imageView3);
-        Glide.with(activity).load(selected.getImage4()).fitCenter().into(holder.booleanSelect);
+        if(selected.getImage() != null) {
+            Glide.with(activity).load(selected.getImage()).fitCenter().into(holder.imageView);
+        }
+        if(selected.getImage2() != null) {
+            Glide.with(activity).load(selected.getImage2()).fitCenter().into(holder.imageView2);
+        }
+        if(selected.getImage3() != null) {
+            Glide.with(activity).load(selected.getImage3()).fitCenter().into(holder.imageView3);
+        }
+        if(selected.getImage4() != null) {
+            Glide.with(activity).load(selected.getImage4()).fitCenter().into(holder.booleanSelect);
+        }
+
     }
 
     @Override
