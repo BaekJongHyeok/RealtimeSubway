@@ -76,6 +76,9 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
     private SharedPreferences.Editor editor;
     private StationApi apiService;
     private SearchStationLine searchStationLine;
+    private long backKeyPressedTime = 0;
+
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -338,6 +341,18 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
             layoutMain.setVisibility(View.VISIBLE);
             layoutResult.setVisibility(View.GONE);
             setFavorList();
+        } else if(layoutMain.getVisibility() == View.VISIBLE) {
+            if(System.currentTimeMillis() > backKeyPressedTime + 2000) {
+                backKeyPressedTime = System.currentTimeMillis();
+                makeToast("뒤로 버튼을 한번 더 누르시면 종료됩니다.");
+            } else {
+                toast.cancel();
+                finish();
+            }
         }
+    }
+
+    private void makeToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }
