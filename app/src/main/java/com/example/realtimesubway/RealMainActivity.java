@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -151,7 +152,18 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
                 intent.putExtra(SubwayDataPrintViewPager.KEY_LINECOUNT, sortedMap.get(stationName).size());
                 intent.putStringArrayListExtra(SubwayDataPrintViewPager.KEY_STATION_LINES, sortedMap.get(stationName));
                 startActivity(intent);
-                etSearch.setText(null);
+            }
+        });
+
+        lvFavor.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String stationName = favorList.get(position).getStationName();
+                Intent intent = new Intent(getApplicationContext(), SubwayDataPrintViewPager.class);
+                intent.putExtra(SubwayDataPrintViewPager.KEY_STATION_NAME, stationName);
+                intent.putExtra(SubwayDataPrintViewPager.KEY_LINECOUNT, sortedMap.get(stationName).size());
+                intent.putStringArrayListExtra(SubwayDataPrintViewPager.KEY_STATION_LINES, sortedMap.get(stationName));
+                startActivity(intent);
             }
         });
     }
@@ -166,6 +178,7 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
                     String searchText = etSearch.getText().toString();
                     search(searchText);
                 } else if(view == tv_main) {
+                    etSearch.setText(null);
                     searchItemList.clear();
                     searchAdapter.notifyDataSetChanged();
                     layoutMain.setVisibility(View.VISIBLE);
