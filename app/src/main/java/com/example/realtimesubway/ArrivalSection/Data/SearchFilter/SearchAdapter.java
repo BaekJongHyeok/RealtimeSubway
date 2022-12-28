@@ -19,8 +19,8 @@ import java.util.List;
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder>{
 
     private OnItemClickListener mListener = null;
-    List<SearchItem> searchItemArrayList;
-    Activity activity;
+    private List<SearchItem> searchItemArrayList;
+    private Activity activity;
 
 
     public SearchAdapter(List<SearchItem> searchItemArrayList, Activity activity) {

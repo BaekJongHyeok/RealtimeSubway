@@ -50,10 +50,10 @@ public class AllStationAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = layoutInflater.inflate(R.layout.position_item_stationlinemap, null);
-        TextView text_lineList = (TextView)view.findViewById(R.id.Text_lineList);
-        TextView text_boundary = (TextView)view.findViewById(R.id.subwayLine_boundary);
-        ImageButton image_statusUp = (ImageButton) view.findViewById(R.id.imageUp);
-        ImageButton image_statusDown = (ImageButton) view.findViewById(R.id.imageDown);
+        TextView text_lineList = view.findViewById(R.id.Text_lineList);
+        TextView text_boundary = view.findViewById(R.id.subwayLine_boundary);
+        ImageButton image_statusUp = view.findViewById(R.id.imageUp);
+        ImageButton image_statusDown = view.findViewById(R.id.imageDown);
         String confirmStatnNm = allStationData.get(position).getStationName();
     // 분기점마다 어느 방면인지 출력
         text_boundary.setVisibility(View.INVISIBLE);

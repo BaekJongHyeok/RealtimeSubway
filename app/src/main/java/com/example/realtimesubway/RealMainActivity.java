@@ -5,19 +5,24 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.realtimesubway.ArrivalSection.Data.Line.SubwayDataPrintViewPager;
@@ -30,9 +35,10 @@ import com.example.realtimesubway.ArrivalSection.Data.SearchStationLineImage.Sea
 import com.example.realtimesubway.Common.Const;
 import com.example.realtimesubway.network.RetrofitClient;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -40,27 +46,34 @@ import java.util.TreeMap;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class RealMainActivity extends AppCompatActivity {
+public class RealMainActivity extends AppCompatActivity implements View.OnTouchListener {
     private String TAG = RealMainActivity.class.getSimpleName();
 
     // UI
+    private ListView lvFavor;
+    private FavorListViewAdapter favorListViewAdapter;
     private EditText etSearch;
+    private TextView tv_main;
     private RecyclerView rvSearchResult;
     private DividerItemDecoration itemDivider;
+    private LinearLayout layoutMain, layoutResult;
+    private LinearLayoutManager lyManager;
     private ProgressBar pbLoading;
-
     private int progressCount = 0;
+
+    private boolean isFavor = false;
+    private String stationName;
+    private Map<String, ArrayList<String>> sortedMap;
+    private Map<String, ArrayList<Bitmap>> imageMap = new HashMap<>();
+    private ArrayList<SearchItem> searchItemCopyList = new ArrayList();
     private List<SearchItem> searchItemList, filteredList;
     private SearchAdapter searchAdapter;
-    private LinearLayoutManager lyManager;
-    private Map<String, ArrayList<String>> sortedMap;
-    private String stationName;
-    private ArrayList<Bitmap> imageList;
+    private ArrayList<SearchItem> favorList = new ArrayList<>();
 
-    //Retrofit
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
     private StationApi apiService;
-
-    SearchStationLine searchStationLine;
+    private SearchStationLine searchStationLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +81,25 @@ public class RealMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_real_main);
 
         init();
-
         addEventListener();
     }
 
     private void init() {
         searchStationLine = new SearchStationLine();
 
-        etSearch = findViewById(R.id.et_search);
+        layoutMain = findViewById(R.id.layout_main);
+        layoutResult = findViewById(R.id.layoutResult);
+        tv_main = findViewById(R.id.btn_main);
+        tv_main.setOnTouchListener(this);
         rvSearchResult = findViewById(R.id.rv_searchResult);
         pbLoading = findViewById(R.id.pb_loading);
+        etSearch = findViewById(R.id.et_search);
+        etSearch.setOnTouchListener(this);
+        lvFavor = findViewById(R.id.list_favor);
+        favorListViewAdapter = new FavorListViewAdapter(this, favorList);
+        lvFavor.setAdapter(favorListViewAdapter);
+
+        pref = getSharedPreferences("favor", MODE_PRIVATE);
 
         filteredList = new ArrayList<>();
         searchItemList = new ArrayList<>();
@@ -100,7 +122,6 @@ public class RealMainActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Log.d(TAG, "beforeTextChanged: dddd");
-
             }
 
             @Override
@@ -111,6 +132,7 @@ public class RealMainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 String searchText = etSearch.getText().toString();
+                search(searchText);
             }
         });
 
@@ -132,9 +154,64 @@ public class RealMainActivity extends AppCompatActivity {
                 etSearch.setText(null);
             }
         });
-
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                if(view == etSearch) {
+                    layoutMain.setVisibility(View.GONE);
+                    layoutResult.setVisibility(View.VISIBLE);
+                    String searchText = etSearch.getText().toString();
+                    search(searchText);
+                } else if(view == tv_main) {
+                    searchItemList.clear();
+                    searchAdapter.notifyDataSetChanged();
+                    layoutMain.setVisibility(View.VISIBLE);
+                    layoutResult.setVisibility(View.GONE);
+                    setFavorList();
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
+    // EditText focus 아웃될 경우
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)ev.getRawX(), (int)ev.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void search(String searchText) {
+        searchItemList.clear();
+
+        if(searchText.length() == 0) {
+            searchItemList.addAll(searchItemCopyList);
+        } else {
+            for(SearchItem item : searchItemCopyList) {
+                if(item.getStationName().toLowerCase().contains(searchText)) {
+                    searchItemList.add(item);
+                }
+            }
+        }
+        searchAdapter.notifyDataSetChanged();
+    }
+
+    // api로 전체역 정보 받아서 MAP 형태로 저장
     private void getStationInfo() {
         retrofit2.Call<SearchInfoBySubwayNameService> call = apiService.getStationData(1000);
         call.enqueue(new Callback<SearchInfoBySubwayNameService>() {
@@ -179,24 +256,41 @@ public class RealMainActivity extends AppCompatActivity {
     }
 
     private void setStationInfo() {
-        // 전철역 뿌려주기
+        // 전철역 정보 저장
         setProgressbar(true);
         for(Map.Entry<String, ArrayList<String>> entry: sortedMap.entrySet()){
             stationName = entry.getKey();
             ArrayList<String> lines = entry.getValue();
 
-            imageList = new ArrayList<>();
+            ArrayList<Bitmap> imageList = new ArrayList<>();
             if(lines.size() > 0){
                 for(String line : lines) {
                     Bitmap image = searchStationLine.search(getApplicationContext(), line);
                     imageList.add(image);
                 }
+                imageMap.put(stationName, imageList);
                 searchItemList.add(new SearchItem(imageList, stationName));
+
+                // stationName이 즐겨찾기 되어있을 경우
+                setFavorList();
             }
         }
 
+        searchItemCopyList.addAll(searchItemList);
         setProgressbar(false);
-        searchAdapter.notifyDataSetChanged();
+    }
+
+    private void setFavorList() {
+        favorList.clear();
+        Collection<?> collection = pref.getAll().keySet();
+        Iterator<?> iterator = collection.iterator();
+
+        while(iterator.hasNext()) {
+            String stName = (String) iterator.next();
+            favorList.add(new SearchItem(imageMap.get(stName),stName));
+        }
+
+        favorListViewAdapter.notifyDataSetChanged();
     }
 
     public void setProgressbar(boolean visible) {

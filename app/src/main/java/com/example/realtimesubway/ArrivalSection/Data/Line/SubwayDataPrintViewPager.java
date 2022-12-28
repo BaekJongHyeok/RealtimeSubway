@@ -1,6 +1,9 @@
 package com.example.realtimesubway.ArrivalSection.Data.Line;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,35 +18,63 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubwayDataPrintViewPager extends AppCompatActivity {
+public class SubwayDataPrintViewPager extends AppCompatActivity implements View.OnClickListener {
     public static final String KEY_STATION_NAME = "stationname";
     public static final String KEY_STATION_LINES = "stationlines";
     public static final String KEY_LINECOUNT = "linecount";
-    String stationName;
-    ArrayList<String> stationLines;
-    TabLayout tablayout;
-    int lineCount;
-    private TextView textView;
+
+    //Ui
+    private ImageButton btn_favor;
+    private TextView tvStationName;
     private ImageView firImage, secImage, thdImage;
+    private TabLayout tablayout;
+
     private ViewPager2 viewpager2;
     private ViewPagerAdapter viewPagerAdapter;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+
+    ArrayList<String> stationLines;
     String imageKey; // 01호선 -> line1로 변환된 이름 받아올 string
-    String resName, packName;
+    String resName, packName, stationName;
     int resId; // 변수명 참조해서 drawable에서 가져온 리소스의 아이디
+    int lineCount;
+    boolean isFavor = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewpager_test);
-        textView = (TextView) findViewById(R.id.textStNm);
-        firImage = (ImageView) findViewById(R.id.firstImage);
-        secImage = (ImageView) findViewById(R.id.secondImage);
-        thdImage = (ImageView) findViewById(R.id.thirdImage);
+
+        init();
+        addEventListener();
+    }
+
+    private void init() {
         stationName = getIntent().getStringExtra(KEY_STATION_NAME);
         stationLines = getIntent().getStringArrayListExtra(KEY_STATION_LINES);
         lineCount = getIntent().getIntExtra(KEY_LINECOUNT,0);
 
-        textView.setText(stationName +" 역"); // 역이름 출력
+        pref = getSharedPreferences("favor", MODE_PRIVATE);
+        editor = pref.edit();
+
+        btn_favor = findViewById(R.id.btn_select);
+        btn_favor.setOnClickListener(this);
+        firImage = findViewById(R.id.firstImage);
+        secImage = findViewById(R.id.secondImage);
+        thdImage = findViewById(R.id.thirdImage);
+        tvStationName = findViewById(R.id.textStNm);
+        tvStationName.setText(stationName +" 역"); // 역이름 출력
+
+        isFavor = pref.getBoolean(stationName, false);
+        if(isFavor) {
+            btn_favor.setBackground(getDrawable(R.drawable.selected));
+        } else {
+            btn_favor.setBackground(getDrawable(R.drawable.select));
+        }
+    }
+
+    private void addEventListener() {
         // 선택된 역의 호선 아이콘 표시
         if(lineCount == 1){ // 1개 노선일때
             drawableSort(stationLines.get(0));
@@ -102,6 +133,21 @@ public class SubwayDataPrintViewPager extends AppCompatActivity {
         }).attach();
     }
 
+    @Override
+    public void onClick(View view) {
+        isFavor = pref.getBoolean(stationName, false);
+        if(view == btn_favor) {
+            if(isFavor) {
+                btn_favor.setBackground(getDrawable(R.drawable.select));
+                editor.remove(stationName);
+            } else {
+                btn_favor.setBackground(getDrawable(R.drawable.selected));
+                editor.putBoolean(stationName, true);
+            }
+            editor.apply();
+        }
+    }
+
     private void drawableSort(String stationLine) { // ex) 01호선 -> line1로 변환
         if(stationLine.equals("01호선")){
             imageKey = "line1";
@@ -133,4 +179,6 @@ public class SubwayDataPrintViewPager extends AppCompatActivity {
             imageKey = "line14";
         }
     }
+
+
 }
