@@ -108,8 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp">
 
-            <ListView
-                android:id="@+id/list_favor"
+            <GridView
+                android:id="@+id/grid_favor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

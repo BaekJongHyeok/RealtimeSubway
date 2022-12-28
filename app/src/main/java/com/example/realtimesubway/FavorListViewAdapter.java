@@ -42,29 +42,32 @@ public class FavorListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View converView, ViewGroup parent) {
-        View view = mLayoutInflater.inflate(R.layout.item_favorlist, null);
+//        View view = mLayoutInflater.inflate(R.layout.item_favorlist, null);
+//
+//        TextView tvStName = view.findViewById(R.id.tvStationName);
+//        ImageView ivFirst = view.findViewById(R.id.imagev1);
+//        ImageView ivSecond = view.findViewById(R.id.imagev2);
+//        ImageView ivThird = view.findViewById(R.id.imagev3);
+//
+//        ArrayList<Bitmap> imageList = sample.get(position).getImageList();
+//        if(imageList != null){
+//            int listSize = imageList.size();
+//
+//            if(listSize > 0) {
+//                ivFirst.setImageBitmap(imageList.get(0));
+//                if(listSize > 1) {
+//                    ivSecond.setImageBitmap(imageList.get(1));
+//                    if(listSize > 2){
+//                        ivThird.setImageBitmap(imageList.get(2));
+//                    }
+//                }
+//            }
+//
+//            tvStName.setText(sample.get(position).getStationName());
+//        }
+        SingerViewer singerViewer = new SingerViewer(ctx, sample);
+        singerViewer.setItem(sample.get(position));
 
-        TextView tvStName = view.findViewById(R.id.tvStationName);
-        ImageView ivFirst = view.findViewById(R.id.imagev1);
-        ImageView ivSecond = view.findViewById(R.id.imagev2);
-        ImageView ivThird = view.findViewById(R.id.imagev3);
-
-        ArrayList<Bitmap> imageList = sample.get(position).getImageList();
-        if(imageList != null){
-            int listSize = imageList.size();
-
-            if(listSize > 0) {
-                ivFirst.setImageBitmap(imageList.get(0));
-                if(listSize > 1) {
-                    ivSecond.setImageBitmap(imageList.get(1));
-                    if(listSize > 2){
-                        ivThird.setImageBitmap(imageList.get(2));
-                    }
-                }
-            }
-
-            tvStName.setText(sample.get(position).getStationName());
-        }
-        return view;
+        return singerViewer;
     }
 }

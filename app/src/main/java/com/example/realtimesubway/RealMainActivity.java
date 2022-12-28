@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -52,7 +53,7 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
     private String TAG = RealMainActivity.class.getSimpleName();
 
     // UI
-    private ListView lvFavor;
+    private GridView lvFavor;
     private FavorListViewAdapter favorListViewAdapter;
     private EditText etSearch;
     private TextView tv_main;
@@ -106,7 +107,7 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
         pbLoading = findViewById(R.id.pb_loading);
         etSearch = findViewById(R.id.et_search);
         etSearch.setOnTouchListener(this);
-        lvFavor = findViewById(R.id.list_favor);
+        lvFavor = findViewById(R.id.grid_favor);
         favorListViewAdapter = new FavorListViewAdapter(this, favorList);
         lvFavor.setAdapter(favorListViewAdapter);
 
