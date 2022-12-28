@@ -1,6 +1,7 @@
 package com.example.realtimesubway.ArrivalSection.Data.SearchFilter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,19 +49,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         SearchItem selected = searchItemArrayList.get(position);
         holder.stationName.setText(selected.getStationName());
-        if(selected.getImage() != null) {
-            Glide.with(activity).load(selected.getImage()).fitCenter().into(holder.imageView);
-        }
-        if(selected.getImage2() != null) {
-            Glide.with(activity).load(selected.getImage2()).fitCenter().into(holder.imageView2);
-        }
-        if(selected.getImage3() != null) {
-            Glide.with(activity).load(selected.getImage3()).fitCenter().into(holder.imageView3);
-        }
-        if(selected.getImage4() != null) {
-            Glide.with(activity).load(selected.getImage4()).fitCenter().into(holder.booleanSelect);
-        }
+        ArrayList<Bitmap> list = selected.getImageList();
 
+        for(Bitmap bitmap : list) {
+            Glide.with(activity).load(bitmap).fitCenter().into(holder.imageView);
+        }
     }
 
     @Override
@@ -79,7 +72,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.stationName=itemView.findViewById(R.id.stationName);
+            this.stationName = itemView.findViewById(R.id.stationName);
             this.imageView = itemView.findViewById(R.id.imagev1);
             this.imageView2 = itemView.findViewById(R.id.imagev2);
             this.imageView3 = itemView.findViewById(R.id.imagev3);

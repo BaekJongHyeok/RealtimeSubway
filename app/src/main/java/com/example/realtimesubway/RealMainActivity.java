@@ -7,12 +7,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.realtimesubway.ArrivalSection.Data.Line.SubwayDataPrintViewPager;
@@ -25,6 +30,7 @@ import com.example.realtimesubway.ArrivalSection.Data.SearchStationLineImage.Sea
 import com.example.realtimesubway.Common.Const;
 import com.example.realtimesubway.network.RetrofitClient;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,19 +47,18 @@ public class RealMainActivity extends AppCompatActivity {
     private EditText etSearch;
     private RecyclerView rvSearchResult;
     private DividerItemDecoration itemDivider;
+    private ProgressBar pbLoading;
 
+    private int progressCount = 0;
     private List<SearchItem> searchItemList, filteredList;
     private SearchAdapter searchAdapter;
     private LinearLayoutManager lyManager;
+    private Map<String, ArrayList<String>> sortedMap;
+    private String stationName;
+    private ArrayList<Bitmap> imageList;
 
     //Retrofit
     private StationApi apiService;
-
-    private Map<String, ArrayList<String>> sortedMap;
-
-    private String stationName;
-
-    private ArrayList<Bitmap> imageList;
 
     SearchStationLine searchStationLine;
 
@@ -68,10 +73,11 @@ public class RealMainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        searchStationLine = new SearchStationLine(getApplicationContext());
+        searchStationLine = new SearchStationLine();
 
-        etSearch = (EditText) findViewById(R.id.et_search);
-        rvSearchResult = (RecyclerView) findViewById(R.id.rv_searchResult);
+        etSearch = findViewById(R.id.et_search);
+        rvSearchResult = findViewById(R.id.rv_searchResult);
+        pbLoading = findViewById(R.id.pb_loading);
 
         filteredList = new ArrayList<>();
         searchItemList = new ArrayList<>();
@@ -94,6 +100,7 @@ public class RealMainActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Log.d(TAG, "beforeTextChanged: dddd");
+
             }
 
             @Override
@@ -135,53 +142,31 @@ public class RealMainActivity extends AppCompatActivity {
             public void onResponse(retrofit2.Call<SearchInfoBySubwayNameService> call, retrofit2.Response<SearchInfoBySubwayNameService> response) {
                 if(response.isSuccessful()) {
                     SearchInfoBySubwayNameService result2 = response.body();
-                    List<Row> rowList =  result2.getSearchInfoBySubwayNameService().getRow();
+                    List<Row> rowList = result2.getSearchInfoBySubwayNameService().getRow();
 
                     // hashmap 형태로 만들기
                     HashMap<String, ArrayList<String>> dic = new HashMap<String, ArrayList<String>>();
-                    for(int i=0; i<rowList.size(); i++){
-                        String key = rowList.get(i).getStationNm();
-                        String lineNumValue = rowList.get(i).getLineNum();
-                        ArrayList<String> list = new ArrayList<String>();
-                        if(dic.containsKey(key)){
-                            list = dic.get(key);
-                            if(lineNumValue.equals("인천선") || lineNumValue.equals("인천2호선") || lineNumValue.equals("경의선") || lineNumValue.equals("경강선")
-                                    || lineNumValue.equals("신림선") || lineNumValue.equals("서해선") || lineNumValue.equals("김포도시철도") || lineNumValue.equals("용인경전철")
-                                    || lineNumValue.equals("의정부경전철")){
-                                // api에 데이터가 없는 노선은 삭제
-                            } else{
-                                list.add(lineNumValue);
-                            }
+
+                    for(Row row : rowList) {
+                        String stName = row.getStationNm();
+                        String lineNum = row.getLineNum();
+                        ArrayList<String> list = new ArrayList<>();
+                        if(dic.containsKey(stName)) list = dic.get(stName);
+
+                        if(lineNum.equals("인천선") || lineNum.equals("인천2호선") || lineNum.equals("경의선") || lineNum.equals("경강선")
+                                || lineNum.equals("신림선") || lineNum.equals("서해선") || lineNum.equals("김포도시철도") || lineNum.equals("용인경전철")
+                                || lineNum.equals("의정부경전철")) {// api에 데이터가 없는 노선은 삭제
+
                         } else {
-                            if(lineNumValue.equals("인천선") || lineNumValue.equals("인천2호선") || lineNumValue.equals("경의선") || lineNumValue.equals("경강선")
-                                    || lineNumValue.equals("신림선") || lineNumValue.equals("서해선") || lineNumValue.equals("김포도시철도") || lineNumValue.equals("용인경전철")
-                                    || lineNumValue.equals("의정부경전철")){
-                                // api에 데이터가 없는 노선은 삭제
-                            } else{
-                                list.add(lineNumValue);
-                            }
+                            list.add(lineNum);
                         }
-                        dic.put(key,list);
+                        dic.put(stName,list);
                     }
 
                     // 맵 key 기준 정렬
                     sortedMap = new TreeMap<>(dic);
 
-                    // 전철역 뿌려주기
-                    for(Map.Entry<String, ArrayList<String>> entry: sortedMap.entrySet()){
-                        stationName = entry.getKey();
-                        ArrayList<String> lines = entry.getValue();
-
-                        imageList = new ArrayList<>();
-                        if(lines.size() > 0){
-                            for(String line : lines) {
-                                Bitmap image = searchStationLine.search(line);
-                                imageList.add(image);
-                            }
-
-                            searchItemList.add(new SearchItem(imageList, stationName));
-                        }
-                    }
+                    setStationInfo();
                 } else {
                     Toast.makeText(getApplicationContext() ,"에러", Toast.LENGTH_SHORT).show();
                 }
@@ -191,5 +176,42 @@ public class RealMainActivity extends AppCompatActivity {
                 Log.d("test", "error");
             }
         });
+    }
+
+    private void setStationInfo() {
+        // 전철역 뿌려주기
+        setProgressbar(true);
+        for(Map.Entry<String, ArrayList<String>> entry: sortedMap.entrySet()){
+            stationName = entry.getKey();
+            ArrayList<String> lines = entry.getValue();
+
+            imageList = new ArrayList<>();
+            if(lines.size() > 0){
+                for(String line : lines) {
+                    Bitmap image = searchStationLine.search(getApplicationContext(), line);
+                    imageList.add(image);
+                }
+                searchItemList.add(new SearchItem(imageList, stationName));
+            }
+        }
+
+        setProgressbar(false);
+        searchAdapter.notifyDataSetChanged();
+    }
+
+    public void setProgressbar(boolean visible) {
+        if (visible) {
+            if (progressCount == 0) {
+                pbLoading.setVisibility(View.VISIBLE);
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+            progressCount++;
+        } else {
+            progressCount--;
+            if (progressCount == 0) {
+                pbLoading.setVisibility(View.GONE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+        }
     }
 }

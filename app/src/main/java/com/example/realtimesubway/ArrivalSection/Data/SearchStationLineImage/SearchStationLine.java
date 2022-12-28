@@ -6,21 +6,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
 import com.example.realtimesubway.R;
 
 public class SearchStationLine {
-    public Bitmap image;
-    private Context ctx;
+    public SearchStationLine() {}
 
-    public SearchStationLine(Context ctx) {
-        this.ctx = ctx;
-    }
-
-    public Bitmap search(String line) {
+    public Bitmap search(Context ctx, String line) {
+        Bitmap image = null;
         if (line.equals("01호선")) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) ctx.getResources().getDrawable(R.drawable.line1);
-            image = bitmapDrawable.getBitmap();
+            image = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line1);
         } else if (line.equals("02호선")) {
             image = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line2);
         } else if (line.equals("03호선")) {
@@ -46,10 +42,9 @@ public class SearchStationLine {
         } else if (line.equals("신분당선")) {
             image = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line13);
         } else if (line.equals("우이신설선")) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) ctx.getResources().getDrawable(R.drawable.line14);
-            image = bitmapDrawable.getBitmap();
+            image = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line14);
         } else if(line == null){
-            image  = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line24);;
+            image = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line24);;
         }
         return image;
     }
