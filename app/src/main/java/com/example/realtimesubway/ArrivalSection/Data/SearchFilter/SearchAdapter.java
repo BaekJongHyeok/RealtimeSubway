@@ -46,13 +46,27 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         SearchItem selected = searchItemArrayList.get(position);
         holder.stationName.setText(selected.getStationName());
         ArrayList<Bitmap> list = selected.getImageList();
+        int listSize = list.size();
 
-        for(Bitmap bitmap : list) {
-            Glide.with(activity).load(bitmap).fitCenter().into(holder.imageView);
+        for(int i=0; i<listSize; i++) {
+            if(listSize > 0) {
+                Glide.with(activity).load(list.get(0)).fitCenter().into(holder.imageView);
+                if(listSize > 1) {
+                    Glide.with(activity).load(list.get(1)).fitCenter().into(holder.imageView2);
+                    if(listSize > 2) {
+                        Glide.with(activity).load(list.get(2)).fitCenter().into(holder.imageView3);
+                    }
+                }
+            }
         }
     }
 

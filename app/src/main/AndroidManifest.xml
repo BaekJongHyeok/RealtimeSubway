@@ -40,7 +40,8 @@
         <activity
             android:name=".PositionMainActivity"
             android:exported="false" />
-        <activity android:name=".ArrivalSection.Data.Line.SubwayDataPrintViewPager" />
+        <activity android:name=".ArrivalSection.Data.Line.SubwayDataPrintViewPager"
+            android:parentActivityName=".RealMainActivity"/>
         <activity android:name=".PositionSection.RealtimePositionLine2" />
     </application>
 

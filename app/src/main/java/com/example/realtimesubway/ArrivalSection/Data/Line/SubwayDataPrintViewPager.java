@@ -179,6 +179,4 @@ public class SubwayDataPrintViewPager extends AppCompatActivity implements View.
             imageKey = "line14";
         }
     }
-
-
 }

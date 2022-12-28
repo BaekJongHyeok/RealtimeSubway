@@ -38,6 +38,7 @@ import com.example.realtimesubway.network.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -83,6 +84,12 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
 
         init();
         addEventListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setFavorList();
     }
 
     private void init() {
@@ -250,6 +257,7 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
                         } else {
                             list.add(lineNum);
                         }
+                        Collections.sort(list);
                         dic.put(stName,list);
                     }
 
@@ -319,6 +327,17 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
                 pbLoading.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(layoutResult.getVisibility() == View.VISIBLE) {
+            searchItemList.clear();
+            searchAdapter.notifyDataSetChanged();
+            layoutMain.setVisibility(View.VISIBLE);
+            layoutResult.setVisibility(View.GONE);
+            setFavorList();
         }
     }
 }
