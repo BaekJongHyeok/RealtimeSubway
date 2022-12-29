@@ -31,38 +31,26 @@
             android:layout_height="wrap_content"
             android:gravity="center">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imagev1"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/stationName"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"
-                tools:ignore="MissingConstraints" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imagev2"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imagev1"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"
-                tools:ignore="MissingConstraints" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imagev3"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imagev2"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"
-                tools:ignore="MissingConstraints" />
+                android:visibility="gone" />
 
         </LinearLayout>
 
