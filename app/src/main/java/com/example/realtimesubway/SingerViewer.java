@@ -32,10 +32,10 @@ public class SingerViewer extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.item_favorlist,this,true);
 
-        tvStName = (TextView) findViewById(R.id.tvStationName);
-        ivFirst = (ImageView) findViewById(R.id.imagev1);
-        ivSecond = (ImageView) findViewById(R.id.imagev2);
-        ivThird = (ImageView) findViewById(R.id.imagev3);
+        tvStName = findViewById(R.id.tvStationName);
+        ivFirst = findViewById(R.id.imagev1);
+        ivSecond = findViewById(R.id.imagev2);
+        ivThird = findViewById(R.id.imagev3);
     }
 
     public void setItem(SearchItem item) {
@@ -45,13 +45,16 @@ public class SingerViewer extends LinearLayout {
 
             if(listSize > 0) {
                 ivFirst.setImageBitmap(imageList.get(0));
+                ivFirst.setVisibility(VISIBLE);
                 if(listSize > 1) {
                     ivSecond.setImageBitmap(imageList.get(1));
+                    ivSecond.setVisibility(VISIBLE);
                     if(listSize > 2){
                         ivThird.setImageBitmap(imageList.get(2));
-                    }
-                }
-            }
+                        ivThird.setVisibility(VISIBLE);
+                    } else ivThird.setVisibility(GONE);
+                } else ivSecond.setVisibility(GONE);
+            } else ivFirst.setVisibility(GONE);
 
             tvStName.setText(item.getStationName());
         }

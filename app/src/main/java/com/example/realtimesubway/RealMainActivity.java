@@ -302,6 +302,7 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
         }
 
         searchItemCopyList.addAll(searchItemList);
+        lvFavor.setVisibility(View.VISIBLE);
         setProgressbar(false);
     }
 
