@@ -36,15 +36,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RealtimePositionLine2 extends AppCompatActivity{
     public static final String KEY_LINENUM = "linenum";
-    int position;
-    TreeMap<String, String> sortedStationMap, reverseSortedStationMap;
-    ArrayList<AllStationData> AllStationData;
-    ListView upLineListView;
-    String lineNum; // 변환받은 라인 이름을 넣어줄 변수
-    List<PositionData> upPositionList;
-    List<PositionData> downPositionList;
-    CustomDialog customDialog;
-    Button btn_On, btn_Off, btn_refresh;
+    private int position;
+    private TreeMap<String, String> sortedStationMap, reverseSortedStationMap;
+    private ArrayList<AllStationData> AllStationData;
+    private ListView upLineListView;
+    private String lineNum; // 변환받은 라인 이름을 넣어줄 변수
+    private List<PositionData> upPositionList, downPositionList;
+    private CustomDialog customDialog;
+    private Button btn_On, btn_Off, btn_refresh;
 
 
     @Override
