@@ -1,9 +1,7 @@
 package com.example.realtimesubway.PositionSection;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
@@ -42,17 +40,17 @@ public class CustomDialog {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.subway_customdialog);
 
-        TextView text_trainNo = (TextView)dialog.findViewById(R.id.trainNo);
-        TextView text_statnTnm = (TextView)dialog.findViewById(R.id.statnTnm);
-        TextView text_statnNm = (TextView)dialog.findViewById(R.id.statnNm);
-        TextView text_directAt = (TextView)dialog.findViewById(R.id.directAt);
-        TextView text_result_checkBox = (TextView)dialog.findViewById(R.id.checkbox_result);
-        final Button button = (Button)dialog.findViewById(R.id.ok_btn);
-        final Spinner sp = (Spinner)dialog.findViewById(R.id.spinner);
-        final CheckBox before1 = (CheckBox)dialog.findViewById(R.id.before1);
-        final CheckBox before2 = (CheckBox)dialog.findViewById(R.id.before2);
-        final CheckBox before3 = (CheckBox)dialog.findViewById(R.id.before3);
-        final Button btn_checkBox = (Button) dialog.findViewById(R.id.btn_checkbox);
+        TextView text_trainNo = dialog.findViewById(R.id.trainNo);
+        TextView text_statnTnm = dialog.findViewById(R.id.statnTnm);
+        TextView text_statnNm = dialog.findViewById(R.id.statnNm);
+        TextView text_directAt = dialog.findViewById(R.id.directAt);
+        TextView text_result_checkBox = dialog.findViewById(R.id.checkbox_result);
+        final Button button = dialog.findViewById(R.id.ok_btn);
+        final Spinner sp = dialog.findViewById(R.id.spinner);
+        final CheckBox before1 = dialog.findViewById(R.id.before1);
+        final CheckBox before2 = dialog.findViewById(R.id.before2);
+        final CheckBox before3 = dialog.findViewById(R.id.before3);
+        final Button btn_checkBox = dialog.findViewById(R.id.btn_checkbox);
 
     // 지하철 세부정보 출력
         for(int i = 0; i<positionList.size(); i++){

@@ -35,10 +35,8 @@ public class SubwayDataPrintViewPager extends AppCompatActivity implements View.
     private SharedPreferences.Editor editor;
 
     ArrayList<String> stationLines;
-    String imageKey; // 01호선 -> line1로 변환된 이름 받아올 string
-    String resName, packName, stationName;
+    String stationName;
     int resId; // 변수명 참조해서 drawable에서 가져온 리소스의 아이디
-    int lineCount;
     boolean isFavor = false;
 
     @Override
@@ -53,7 +51,6 @@ public class SubwayDataPrintViewPager extends AppCompatActivity implements View.
     private void init() {
         stationName = getIntent().getStringExtra(KEY_STATION_NAME);
         stationLines = getIntent().getStringArrayListExtra(KEY_STATION_LINES);
-        lineCount = getIntent().getIntExtra(KEY_LINECOUNT,0);
 
         pref = getSharedPreferences("favor", MODE_PRIVATE);
         editor = pref.edit();
@@ -66,61 +63,45 @@ public class SubwayDataPrintViewPager extends AppCompatActivity implements View.
         tvStationName = findViewById(R.id.textStNm);
         tvStationName.setText(stationName +" 역"); // 역이름 출력
 
+        tablayout = findViewById(R.id.layout_tab);
+        viewpager2 = findViewById(R.id.viewpager2_container);
+
+        viewPagerAdapter = new ViewPagerAdapter(this, stationLines.size(), stationLines, stationName);
+        viewpager2.setAdapter(viewPagerAdapter);
+
         isFavor = pref.getBoolean(stationName, false);
         if(isFavor) {
             btn_favor.setBackground(getDrawable(R.drawable.selected));
         } else {
             btn_favor.setBackground(getDrawable(R.drawable.select));
         }
-    }
 
-    private void addEventListener() {
         // 선택된 역의 호선 아이콘 표시
-        if(lineCount == 1){ // 1개 노선일때
-            drawableSort(stationLines.get(0));
-            resName = "drawable/"+imageKey;
-            packName = this.getPackageName();
-            resId = getResources().getIdentifier(resName, "drawable", packName);
-            secImage.setImageResource(resId);
-        } else if(lineCount == 2){ // 2개 노선일 때
-            for(int i=0; i<2; i++){
-                drawableSort(stationLines.get(i));
-                resName = "drawable/"+imageKey;
-                packName = this.getPackageName();
-                resId = getResources().getIdentifier(resName, "drawable", packName);
-                if(i == 0){
-                    firImage.setImageResource(resId);
-                } else if(i == 1){
-                    thdImage.setImageResource(resId);
-                }
-            }
-        } else if(lineCount == 3){ // 3개 노선일 때
-            for(int i=0; i<3; i++){
-                drawableSort(stationLines.get(i));
-                resName = "drawable/"+imageKey;
-                packName = this.getPackageName();
-                resId = getResources().getIdentifier(resName, "drawable", packName);
-                if(i == 0){
-                    firImage.setImageResource(resId);
-                } else if(i == 1){
+        for(String line : stationLines) {
+            String imageKey = drawableSort(line);
+            resId = getResources().getIdentifier("drawable/" + imageKey, "drawable", this.getPackageName());
+            if(firImage.getVisibility() != View.VISIBLE) {
+                firImage.setVisibility(View.VISIBLE);
+                firImage.setImageResource(resId);
+            } else {
+                if(secImage.getVisibility() != View.VISIBLE) {
+                    secImage.setVisibility(View.VISIBLE);
                     secImage.setImageResource(resId);
                 } else {
-                    thdImage.setImageResource(resId);
+                    if(thdImage.getVisibility() != View.VISIBLE) {
+                        thdImage.setVisibility(View.VISIBLE);
+                        thdImage.setImageResource(resId);
+                    }
                 }
             }
         }
+    }
 
-        tablayout = findViewById(R.id.layout_tab);
-        viewpager2 = findViewById(R.id.viewpager2_container);
-
-        viewPagerAdapter = new ViewPagerAdapter(this, lineCount, stationLines, stationName);
-        viewpager2.setAdapter(viewPagerAdapter);
-
-
+    private void addEventListener() {
         // Viewpager 후보
         final List<String> tabElement = new ArrayList<String>();
-        for(int i=0; i<stationLines.size(); i++){
-            tabElement.add(stationLines.get(i));
+        for(String stationLine : stationLines) {
+            tabElement.add(stationLine);
         }
 
         new TabLayoutMediator(tablayout, viewpager2, new TabLayoutMediator.TabConfigurationStrategy() {
@@ -148,35 +129,38 @@ public class SubwayDataPrintViewPager extends AppCompatActivity implements View.
         }
     }
 
-    private void drawableSort(String stationLine) { // ex) 01호선 -> line1로 변환
-        if(stationLine.equals("01호선")){
-            imageKey = "line1";
-        } else if(stationLine.equals("02호선")){
-            imageKey = "line2";
-        } else if(stationLine.equals("03호선")){
-            imageKey = "line3";
-        } else if(stationLine.equals("04호선")){
-            imageKey = "line4";
-        } else if(stationLine.equals("05호선")){
-            imageKey = "line5";
-        } else if(stationLine.equals("06호선")){
-            imageKey = "line6";
-        } else if(stationLine.equals("07호선")){
-            imageKey = "line7";
-        } else if(stationLine.equals("08호선")){
-            imageKey = "line8";
-        } else if(stationLine.equals("09호선")){
-            imageKey = "line9";
-        } else if(stationLine.equals("수인분당선")){
-            imageKey = "line10";
-        } else if(stationLine.equals("경춘선")){
-            imageKey = "line11";
-        } else if(stationLine.equals("공항철도")){
-            imageKey = "line12";
-        } else if(stationLine.equals("신분당선")){
-            imageKey = "line13";
-        } else if(stationLine.equals("우이신설선")){
-            imageKey = "line14";
+    private String drawableSort(String stationLine) { // ex) 01호선 -> line1로 변환
+        switch (stationLine) {
+            case "01호선":
+                return "line1";
+            case "02호선":
+                return "line2";
+            case "03호선":
+                return "line3";
+            case "04호선":
+                return "line4";
+            case "05호선":
+                return "line5";
+            case "06호선":
+                return "line6";
+            case "07호선":
+                return "line7";
+            case "08호선":
+                return "line8";
+            case "09호선":
+                return "line9";
+            case "수인분당선":
+                return "line10";
+            case "경춘선":
+                return "line11";
+            case "공항철도":
+                return "line12";
+            case "신분당선":
+                return "line13";
+            case "우이신설선":
+                return "line14";
+            default :
+                return "";
         }
     }
 }

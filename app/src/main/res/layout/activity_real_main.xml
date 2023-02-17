@@ -46,7 +46,8 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:hint="검색"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:inputType="text"/>
 
             <ImageButton
                 android:layout_width="40dp"
@@ -107,7 +108,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:gravity="center">
 
             <GridView
@@ -148,6 +149,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

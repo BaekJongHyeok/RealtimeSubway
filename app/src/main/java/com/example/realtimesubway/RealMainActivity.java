@@ -1,10 +1,5 @@
 package com.example.realtimesubway;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,18 +9,24 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.realtimesubway.ArrivalSection.Data.Line.SubwayDataPrintViewPager;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Station.Row;
@@ -38,6 +39,7 @@ import com.example.realtimesubway.Common.Const;
 import com.example.realtimesubway.network.RetrofitClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,7 +99,7 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void init() {
-        searchStationLine = new SearchStationLine();
+        searchStationLine = new SearchStationLine(getApplicationContext());
 
         layoutMain = findViewById(R.id.layout_main);
         layoutResult = findViewById(R.id.layoutResult);
@@ -132,14 +134,10 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
     private void addEventListener() {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.d(TAG, "beforeTextChanged: dddd");
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.d(TAG, "onTextChanged: ddd");
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -153,16 +151,11 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
             @Override
             public void onItemClick(View v, int position) {
                 String stationName = "";
-                if(filteredList.size() == 0) {
-                    stationName = searchItemList.get(position).getStationName();
-                } else {
-                    stationName = filteredList.get(position).getStationName();
-                }
-                Intent intent = new Intent(getApplicationContext(), SubwayDataPrintViewPager.class);
-                intent.putExtra(SubwayDataPrintViewPager.KEY_STATION_NAME, stationName);
-                intent.putExtra(SubwayDataPrintViewPager.KEY_LINECOUNT, sortedMap.get(stationName).size());
-                intent.putStringArrayListExtra(SubwayDataPrintViewPager.KEY_STATION_LINES, sortedMap.get(stationName));
-                startActivity(intent);
+
+                if(filteredList.isEmpty()) stationName = searchItemList.get(position).getStationName();
+                else stationName = filteredList.get(position).getStationName();
+
+                putIntent(stationName);
             }
         });
 
@@ -170,13 +163,29 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String stationName = favorList.get(position).getStationName();
-                Intent intent = new Intent(getApplicationContext(), SubwayDataPrintViewPager.class);
-                intent.putExtra(SubwayDataPrintViewPager.KEY_STATION_NAME, stationName);
-                intent.putExtra(SubwayDataPrintViewPager.KEY_LINECOUNT, sortedMap.get(stationName).size());
-                intent.putStringArrayListExtra(SubwayDataPrintViewPager.KEY_STATION_LINES, sortedMap.get(stationName));
-                startActivity(intent);
+                putIntent(stationName);
             }
         });
+
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void putIntent(String stationName) {
+        Intent intent = new Intent(getApplicationContext(), SubwayDataPrintViewPager.class);
+        intent.putExtra(SubwayDataPrintViewPager.KEY_STATION_NAME, stationName);
+        intent.putExtra(SubwayDataPrintViewPager.KEY_LINECOUNT, sortedMap.get(stationName).size());
+        intent.putStringArrayListExtra(SubwayDataPrintViewPager.KEY_STATION_LINES, sortedMap.get(stationName));
+        startActivity(intent);
     }
 
     @Override
@@ -242,27 +251,26 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
             @Override
             public void onResponse(retrofit2.Call<SearchInfoBySubwayNameService> call, retrofit2.Response<SearchInfoBySubwayNameService> response) {
                 if(response.isSuccessful()) {
-                    SearchInfoBySubwayNameService result2 = response.body();
-                    List<Row> rowList = result2.getSearchInfoBySubwayNameService().getRow();
+                    SearchInfoBySubwayNameService result = response.body();
+                    List<Row> rowList = result.getSearchInfoBySubwayNameService().getRow();
 
                     // hashmap 형태로 만들기
-                    HashMap<String, ArrayList<String>> dic = new HashMap<String, ArrayList<String>>();
+                    HashMap<String, ArrayList<String>> dic = new HashMap<>();
 
                     for(Row row : rowList) {
-                        String stName = row.getStationNm();
+                        String stationName = row.getStationNm();
                         String lineNum = row.getLineNum();
+
                         ArrayList<String> list = new ArrayList<>();
-                        if(dic.containsKey(stName)) list = dic.get(stName);
+                        if(dic.containsKey(stationName)) list = dic.get(stationName);
 
-                        if(lineNum.equals("인천선") || lineNum.equals("인천2호선") || lineNum.equals("경의선") || lineNum.equals("경강선")
-                                || lineNum.equals("신림선") || lineNum.equals("서해선") || lineNum.equals("김포도시철도") || lineNum.equals("용인경전철")
-                                || lineNum.equals("의정부경전철")) {// api에 데이터가 없는 노선은 삭제
-
-                        } else {
+                        List<String> ignoreLineList = Arrays.asList(Const.IGNORE_LINES);
+                        if(!ignoreLineList.contains(lineNum)) {
+                            // api에 데이터가 있는 노선만 추가
                             list.add(lineNum);
+                            Collections.sort(list);
+                            dic.put(stationName,list);
                         }
-                        Collections.sort(list);
-                        dic.put(stName,list);
                     }
 
                     // 맵 key 기준 정렬
@@ -283,23 +291,22 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
     private void setStationInfo() {
         // 전철역 정보 저장
         setProgressbar(true);
+
         for(Map.Entry<String, ArrayList<String>> entry: sortedMap.entrySet()){
             stationName = entry.getKey();
             ArrayList<String> lines = entry.getValue();
 
             ArrayList<Bitmap> imageList = new ArrayList<>();
-            if(lines.size() > 0){
-                for(String line : lines) {
-                    Bitmap image = searchStationLine.search(getApplicationContext(), line);
-                    imageList.add(image);
-                }
-                imageMap.put(stationName, imageList);
-                searchItemList.add(new SearchItem(imageList, stationName));
-
-                // stationName이 즐겨찾기 되어있을 경우
-                setFavorList();
+            for(String line : lines) {
+                Bitmap image = searchStationLine.search(line);
+                imageList.add(image);
             }
+            imageMap.put(stationName, imageList);
+            searchItemList.add(new SearchItem(imageList, stationName));
         }
+
+        // stationName이 즐겨찾기 되어있을 경우
+        setFavorList();
 
         searchItemCopyList.addAll(searchItemList);
         lvFavor.setVisibility(View.VISIBLE);
@@ -307,13 +314,19 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void setFavorList() {
+        if(sortedMap == null) return;
+
         favorList.clear();
         Collection<?> collection = pref.getAll().keySet();
         Iterator<?> iterator = collection.iterator();
 
         while(iterator.hasNext()) {
             String stName = (String) iterator.next();
-            favorList.add(new SearchItem(imageMap.get(stName),stName));
+            ArrayList<Bitmap> imageList = new ArrayList<>();
+            for(String line : sortedMap.get(stName)) {
+                imageList.add(searchStationLine.search(line));
+            }
+            favorList.add(new SearchItem(imageList,stName));
         }
 
         favorListViewAdapter.notifyDataSetChanged();
@@ -338,6 +351,7 @@ public class RealMainActivity extends AppCompatActivity implements View.OnTouchL
     @Override
     public void onBackPressed() {
         if(layoutResult.getVisibility() == View.VISIBLE) {
+            etSearch.setText(null);
             searchItemList.clear();
             searchAdapter.notifyDataSetChanged();
             layoutMain.setVisibility(View.VISIBLE);

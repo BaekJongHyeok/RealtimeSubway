@@ -28,7 +28,7 @@ public class PositionMainActivity extends AppCompatActivity {
 
         this.InitializeLineData();
 
-        ListView listView = (ListView) findViewById(R.id.lineListView);
+        ListView listView = findViewById(R.id.lineListView);
         final LineListAdapter lineListAdapter = new LineListAdapter(this, lineListData);
 
         listView.setAdapter(lineListAdapter);
@@ -36,7 +36,6 @@ public class PositionMainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-
                     Intent intent = new Intent(PositionMainActivity.this, RealtimePositionLine2.class);
                     intent.putExtra(RealtimePositionLine2.KEY_LINENUM,position+1);
                     startActivity(intent);

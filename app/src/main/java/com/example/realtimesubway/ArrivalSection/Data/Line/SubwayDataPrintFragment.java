@@ -37,13 +37,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    RecyclerView recyclerView1, recyclerView2;
-    ArrivalAdapter arrivalAdapter;
-    SwipeRefreshLayout swipeRefreshLayout;
-    RetrofitApi retrofitApi;
-    ArrivalApi arrivalApi;
-    Retrofit retrofit;
-    String stationLineName, stationNm;
+    private RecyclerView recyclerView1, recyclerView2;
+    private ArrivalAdapter arrivalAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RetrofitApi retrofitApi;
+    private ArrivalApi arrivalApi;
+    private Retrofit retrofit;
+    private String stationLineName, stationNm;
 
     public static SubwayDataPrintFragment newInstance(int number, String stationLineNm, String stationNm) {
         SubwayDataPrintFragment fp = new SubwayDataPrintFragment();
@@ -198,7 +198,6 @@ public class SubwayDataPrintFragment extends Fragment implements SwipeRefreshLay
                                     arrTemp.setArvlMsg2(arrival.getArvlMsg2());
                                     downArrivalList.add(arrTemp);
                                 }
-                            } else {
                             }
                         }
                     }

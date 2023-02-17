@@ -24,11 +24,11 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 0:
-                return SubwayDataPrintFragment.newInstance(position, stationLineName.get(0), stationNm);
+                return SubwayDataPrintFragment.newInstance(position, stationLineName.get(position), stationNm);
             case 1:
-                return SubwayDataPrintFragment2.newInstance(position, stationLineName.get(1), stationNm);
+                return SubwayDataPrintFragment2.newInstance(position, stationLineName.get(position), stationNm);
             case 2:
-                return SubwayDataPrintFragment3.newInstance(position, stationLineName.get(2), stationNm);
+                return SubwayDataPrintFragment3.newInstance(position, stationLineName.get(position), stationNm);
             default:
                 return null;
         }
