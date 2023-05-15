@@ -7,11 +7,9 @@ import android.graphics.BitmapFactory;
 import com.example.realtimesubway.R;
 
 public class SearchStationLine {
-    private Context ctx;
     private Bitmap image1, image2, image3,image4,image5,image6,image7,image8,image9,image10,image11,image12,image13, image14;
 
     public SearchStationLine(Context ctx) {
-        this.ctx = ctx;
         image1 = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line1);
         image2 = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line2);
         image3 = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.line3);

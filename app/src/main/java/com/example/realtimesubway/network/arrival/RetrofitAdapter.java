@@ -1,4 +1,4 @@
-package com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit;
+package com.example.realtimesubway.network.arrival;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -22,8 +22,6 @@ public class RetrofitAdapter extends RecyclerView.Adapter<RetrofitAdapter.MyView
         this.c = c;
         this.positionData = dataList;
     }
-
-
 
     @NonNull
     @Override

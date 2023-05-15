@@ -1,4 +1,4 @@
-package com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit;
+package com.example.realtimesubway.network.arrival;
 
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePositionList;
 

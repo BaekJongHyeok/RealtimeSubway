@@ -9,27 +9,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.realtimesubway.R;
+import com.example.realtimesubway.data.Line;
 
 import java.util.ArrayList;
 
 public class LineListAdapter extends BaseAdapter {
-    Context mContext = null;
-    LayoutInflater layoutInflater = null;
-    ArrayList<LineListData> lineListData;
-    public LineListAdapter(Context context, ArrayList<LineListData> data){
+    private Context mContext;
+    private ArrayList<Line> mLineListData;
+    private LayoutInflater mLayoutInflater;
+
+    public LineListAdapter(Context context, ArrayList<Line> data) {
         mContext = context;
-        lineListData = data;
-        layoutInflater = LayoutInflater.from(mContext);
+        mLineListData = data;
+        mLayoutInflater = LayoutInflater.from(mContext);
     }
 
     @Override
     public int getCount() {
-        return lineListData.size();
+        return mLineListData.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return lineListData.get(position);
+        return mLineListData.get(position);
     }
 
     @Override
@@ -39,13 +41,26 @@ public class LineListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = layoutInflater.inflate(R.layout.postioin_item_linelist, null);
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = mLayoutInflater.inflate(R.layout.postioin_item_linelist, parent, false);
+            holder = new ViewHolder();
+            holder.imageView = convertView.findViewById(R.id.postion_item_lineImage);
+            holder.lineText = convertView.findViewById(R.id.position_item_lineText);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.postion_item_lineImage);
-        TextView lineText = (TextView) view.findViewById(R.id.position_item_lineText);
+        Line data = mLineListData.get(position);
+        holder.imageView.setImageResource(data.getImageResource());
+        holder.lineText.setText(data.getName());
 
-        imageView.setImageResource(lineListData.get(position).getLineImage());
-        lineText.setText(lineListData.get(position).getLineNm());
-        return view;
+        return convertView;
+    }
+
+    static class ViewHolder {
+        ImageView imageView;
+        TextView lineText;
     }
 }

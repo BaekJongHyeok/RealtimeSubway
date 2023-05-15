@@ -21,10 +21,10 @@ import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.SubwayArrival.Arri
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.SubwayArrival.RealtimeArrival;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.SubwayArrival.RealtimeArrivalList;
 import com.example.realtimesubway.R;
-import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.ArrivalAdapter;
-import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.ArrivalApi;
-import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.RetrofitAdapter;
-import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.RetrofitApi;
+import com.example.realtimesubway.network.arrival.ArrivalAdapter;
+import com.example.realtimesubway.network.arrival.ArrivalApi;
+import com.example.realtimesubway.network.arrival.RetrofitAdapter;
+import com.example.realtimesubway.network.arrival.RetrofitApi;
 
 import java.io.IOException;
 import java.util.ArrayList;

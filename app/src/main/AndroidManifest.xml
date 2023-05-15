@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".RealMainActivity"
+            android:name=".activity.RealMainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,10 +38,10 @@
             android:exported="true" />
 
         <activity
-            android:name=".PositionMainActivity"
+            android:name=".activity.PositionMainActivity"
             android:exported="false" />
         <activity android:name=".ArrivalSection.Data.Line.SubwayDataPrintViewPager"
-            android:parentActivityName=".RealMainActivity"/>
+            android:parentActivityName=".activity.RealMainActivity"/>
         <activity android:name=".PositionSection.RealtimePositionLine2" />
     </application>
 

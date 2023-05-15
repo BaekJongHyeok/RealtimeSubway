@@ -1,6 +1,5 @@
 package com.example.realtimesubway.PositionSection;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,35 +9,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.loader.content.AsyncTaskLoader;
 
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePosition;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePositionList;
-import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.RetrofitApi;
-import com.example.realtimesubway.PositionSection.AllStation.OpenApi.AllStation;
-import com.example.realtimesubway.PositionSection.AllStation.OpenApi.Row;
-import com.example.realtimesubway.PositionSection.AllStation.Retrofit.AllStationApi;
+import com.example.realtimesubway.network.arrival.RetrofitApi;
 import com.example.realtimesubway.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import retrofit2.Call;

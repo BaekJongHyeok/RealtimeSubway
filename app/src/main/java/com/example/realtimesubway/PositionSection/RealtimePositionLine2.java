@@ -1,8 +1,6 @@
 package com.example.realtimesubway.PositionSection;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.PositionData;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePosition;
 import com.example.realtimesubway.ArrivalSection.Data.OpenAPI.Subway.RealtimePositionList;
-import com.example.realtimesubway.ArrivalSection.Data.Retrofit.SubwayRetrofit.RetrofitApi;
+import com.example.realtimesubway.network.arrival.RetrofitApi;
 import com.example.realtimesubway.PositionSection.AllStation.OpenApi.AllStation;
 import com.example.realtimesubway.PositionSection.AllStation.OpenApi.Row;
 import com.example.realtimesubway.PositionSection.AllStation.Retrofit.AllStationApi;
